@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import '../index.css'; 
 import ListCard from './ListCard';
 
+import { collection, addDoc, getDocs, getDoc, query, where ,updateDoc,doc, orderBy } from "firebase/firestore";
+import {db} from "../Firebase"
+
 export default function MenuLists(props) 
 {
     const [state, setState] = useState({
-        currentList: localStorage.getItem("list") == null ? "" : localStorage.getItem("list")
+        currentList: localStorage.getItem("list") == null ? "" : localStorage.getItem("list"),
+        lists: []
     });
 
     useEffect(() => 
@@ -17,6 +21,29 @@ export default function MenuLists(props)
     useEffect(() => 
     {
         window.addEventListener('resize', handlePosition);
+
+        if(state.lists.length === 0)
+        {
+            try
+            {
+                const fetchData = async () => 
+                {
+                    await getDoc(doc(db, 'users', props.userid)).then((snap) => 
+                    {
+                        if (snap.exists()) 
+                        {
+                            setState(previousState => { return { ...previousState, lists: snap.data().lists }});
+                        }
+                    });
+                };
+                fetchData();
+            } 
+            catch (err) 
+            {
+                console.log(err);
+            } 
+        }
+        
     },[]);
 
     function handleState(args)
@@ -64,6 +91,18 @@ export default function MenuLists(props)
 
     if(props.open == false) return(<></>);
 
+    function GetLists(props)
+    {
+        const listItems = [];
+
+        for (let list of props.lists) 
+        {
+          listItems.push(<ListCard text={list} handler={handleState} current={state.currentList} />);
+        }
+
+        return listItems;
+    }
+
     return (
         <div id="menu-lists-wrapper">
             <div id="menu-list-header">
@@ -79,10 +118,8 @@ export default function MenuLists(props)
                     </svg>
                 </div>
             </div>
-            <ListCard text="Shopping" handler={handleState} current={state.currentList} />
-            <ListCard text="Home" handler={handleState} current={state.currentList} />
-            <ListCard text="School" handler={handleState} current={state.currentList} />
-            <ListCard text="Work" handler={handleState} current={state.currentList} />
+
+            <GetLists lists={state.lists}/>
         </div>
     );
 }

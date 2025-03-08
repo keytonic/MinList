@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import '../index.css'; 
 
 import Header from './Header';
@@ -13,7 +13,8 @@ export default function Body(props)
         menuOptionsOpen: false,
         menuListsOpen: false,
         currentList: localStorage.getItem("list") == null ? "" : localStorage.getItem("list"),
-        showAll: localStorage.getItem("showAll") == null ? "false" : localStorage.getItem("showAll")
+        showAll: localStorage.getItem("showAll") == null ? "false" : localStorage.getItem("showAll"),
+        userid: localStorage.getItem("userid")
     });
 
     useEffect(() => {
@@ -49,9 +50,8 @@ export default function Body(props)
                 <TodoCard checked={false} text="Do laundry" />
                 <TodoCard checked={true} text="Wash dishes" />
             </div>
-            <MenuLists open={state.menuListsOpen} handler={handleState} />
+            <MenuLists open={state.menuListsOpen} handler={handleState} userid={state.userid} />
             <MenuOptions open={state.menuOptionsOpen} handler={handleState} />
         </>
     );
 }
-

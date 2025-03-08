@@ -4,7 +4,7 @@ import '../index.css';
 export default function ListCard(props) 
 {
     const [state, setState] = useState({
-        checked: ((props.text == props.current) ? true : false),
+        //checked: ((props.text == props.current) ? true : false),
         text: props.text,
         count: 0
     });
@@ -18,8 +18,8 @@ export default function ListCard(props)
     {
         if(event.target.id == "list-card-left" || event.target.id == "lists-menu-check" || event.target.id == "lists-menu-check-path")
         {
-            let checked = !state.checked;
-            setState(previousState => { return { ...previousState, checked: checked}});
+            //let checked = !state.checked;
+            //setState(previousState => { return { ...previousState, checked: checked}});
 
             if(localStorage.getItem("list") == state.text)
             {

@@ -14,5 +14,5 @@ A "to-do" style Progressive Web App made with following technologies:
  - give ability to delete your own account
  - forgot password retrieval
  - figure out scroll bars for long lists
-
+ - if user id is null redirect to login page
 -->
