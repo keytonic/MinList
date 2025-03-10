@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import '../index.css'; 
 import OptionCard from './OptionCard';
+import { Link , useNavigate} from "react-router-dom";
 
 export default function MenuOptions(props) 
 {
     const [state, setState] = useState(0);
+
+    const navigate = useNavigate();
 
     useEffect(() => 
     {
@@ -29,6 +32,10 @@ export default function MenuOptions(props)
 
     function handlePosition()
     {
+        const headerWrapper = document.getElementById("header-wrapper");
+
+        if(headerWrapper == null) return;
+        
         const rec = document.getElementById("header-wrapper").getBoundingClientRect();
 
         if(rec == null) return;
@@ -59,6 +66,12 @@ export default function MenuOptions(props)
         {
             alert("about");
         }
+        else if(event.target.id == "button-logout")
+        {
+            localStorage.removeItem("userid");
+            props.handler({loggedIn: false});
+            navigate('/home');
+        }
     }
 
     if(props.open == false) return(<></>);
@@ -83,6 +96,9 @@ export default function MenuOptions(props)
             <OptionCard name="randomOption" text="A random option" handler={handleState} />
             <OptionCard name="anotherRandomOption" text="Another random option" handler={handleState} />
 
+            <div id="button-logout-wrapper">
+                <button id="button-logout" type="button" onClick={handleClick}>Logout</button>
+            </div>
         </div>
     );
 }

@@ -11,13 +11,13 @@ export default function MenuLists(props)
         currentList: localStorage.getItem("list") == null ? "" : localStorage.getItem("list"),
         lists: []
     });
-
+    
     useEffect(() => 
     {
         console.log("MenuLists render");
         handlePosition();
     });
-
+    
     useEffect(() => 
     {
         window.addEventListener('resize', handlePosition);
@@ -33,6 +33,7 @@ export default function MenuLists(props)
                         if (snap.exists()) 
                         {
                             setState(previousState => { return { ...previousState, lists: snap.data().lists }});
+                            props.handler({lists: snap.data().lists});
                         }
                     });
                 };
@@ -89,19 +90,21 @@ export default function MenuLists(props)
         }
     }
 
-    if(props.open == false) return(<></>);
-
     function GetLists(props)
     {
+        const lists = props.lists.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+
         const listItems = [];
 
-        for (let list of props.lists) 
+        for (let list of lists) 
         {
-          listItems.push(<ListCard text={list} handler={handleState} current={state.currentList} />);
+          listItems.push(<ListCard text={list} handler={handleState} current={state.currentList} key={lists.indexOf(list)}/>);
         }
 
         return listItems;
     }
+
+    if(props.open == false) return(<></>);
 
     return (
         <div id="menu-lists-wrapper">

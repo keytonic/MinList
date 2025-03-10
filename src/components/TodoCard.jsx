@@ -5,30 +5,34 @@ export default function TodoCard(props)
 {
     const [state, setState] = useState({
         checked: props.checked,
-        text: props.text
+        text: props.text,
+        id: props.id
     });
 
     useEffect(() => {
-        console.log("Todo render");
+        console.log(`TodoCard render: ${state.text}`);
     });
 
     function handleClick(event)
     {
         if(event.target.id == "todo-card-left" || event.target.id == "check-todo-icon" || event.target.id == "check-todo-icon-path")
         {
-            setState(previousState => { return { ...previousState, checked: !state.checked }});
+            setState(previousState => { return { 
+                ...previousState, 
+                checked: ( state.checked == "true" ? "false" : "true" )
+            }});
         }
         else if(event.target.id == "todo-card-right" || event.target.id == "edit-todo-icon" || event.target.id == "edit-todo-icon-path")
         {
-            alert("edit");
+            props.handler({editTodoId: state.id});
         }
     }
 
     //dont render this item if its completed and show all is off
     let showAll = localStorage.getItem("showAll") == null ? "false" : localStorage.getItem("showAll");
-    if(showAll == "false" && state.checked == true) return(<></>);
+    if(showAll == "false" && state.checked == "true") return(<></>);
 
-    let disp = state.checked == true ? "unset" : "none";
+    let disp = state.checked == "true" ? "unset" : "none";
 
     return (
         <div className="todo-card">

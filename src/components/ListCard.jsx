@@ -10,8 +10,7 @@ export default function ListCard(props)
     });
 
     useEffect(() => {
-        console.log("ListCard render");
-
+        console.log(`ListCard render: ${state.text}`);
     });
 
     function handleClick(event)

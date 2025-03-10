@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import {db} from "../Firebase"
 import '../index.css'; 
 
 export default function Input(props) 
 {
     const [state, setState] = useState({
-        inputValue: ""
+        inputValue: "",
+        currentDate: new Date(),
+        currentList: props.list
     });
 
     useEffect(() => {
@@ -13,15 +17,63 @@ export default function Input(props)
 
     function handleClick(event)
     {
-        if(event.target.id == "input-left" || event.target.id == "add-todo-icon" || event.target.id == "add-todo-icon-path")
+        if(
+            event.target.id == "input-left" || 
+            event.target.id == "add-todo-icon" || 
+            event.target.id == "add-todo-icon-path" || 
+            event.target.id == "add-todo-input"
+        )
         {
-            alert("add");
+            if(state.inputValue == "") return;
+
+            try
+            {
+                const fetchData = async () => 
+                {
+                    const userid = localStorage.getItem("userid");
+    
+                    if(userid == null) return;
+    
+                    let currentList = state.currentList;
+    
+                    if(currentList == null)
+                    { 
+                        currentList = "";
+                    }
+
+                    await addDoc(collection(db, "tasks"), 
+                    { 
+                        checked: "false", 
+                        list: state.currentList, 
+                        text: state.inputValue, 
+                        userid: userid,
+                        details: "",
+                        created: state.currentDate 
+                    }).then(() => {
+                        setState(previousState => { return { ...previousState, inputValue: "" }});
+                        props.handler({reRender: true});
+                    });
+                };
+                fetchData();
+            } 
+            catch (err) 
+            {
+                console.log(err);
+            } 
         }
     }
 
     function handleChange(event)
     {
         setState(previousState => { return { ...previousState, inputValue: event.target.value }});
+    }
+
+    function handleKeyDown(event)
+    {
+        if (event.key === "Enter") 
+        {
+            handleClick(event);
+        }
     }
 
     return (
@@ -32,7 +84,7 @@ export default function Input(props)
                 </svg>
             </div>
             <div id="input-right">
-                <input id="add-todo-input" placeholder="Add a to-do..." type="text" onChange={handleChange} value={state.inputValue}/>
+                <input id="add-todo-input" placeholder="Add a to-do..." type="text" onChange={handleChange} value={state.inputValue} onKeyDown={handleKeyDown}/>
             </div>
         </div>
     );
