@@ -33,7 +33,7 @@ export default function ListCard(props)
         }
         else if(event.target.id == "list-card-right" || event.target.id == "lists-menu-edit" || event.target.id == "lists-menu-edit-path")
         {
-            alert("edit");
+            props.handler({editListId: state.text});
         }
     }
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { collection, addDoc, getDocs, getDoc, query, where ,updateDoc,doc, orderBy } from "firebase/firestore";
+import {db} from "../Firebase"
 import '../index.css'; 
 
 export default function TodoCard(props) 
@@ -17,10 +19,27 @@ export default function TodoCard(props)
     {
         if(event.target.id == "todo-card-left" || event.target.id == "check-todo-icon" || event.target.id == "check-todo-icon-path")
         {
-            setState(previousState => { return { 
-                ...previousState, 
-                checked: ( state.checked == "true" ? "false" : "true" )
-            }});
+            let checked = state.checked == "true" ? "false" : "true";
+
+            setState(previousState => { return { ...previousState, checked: checked }});
+
+            try
+            {
+                const fetchData = async () => 
+                {
+                    await updateDoc(doc(db, "tasks", state.id), { checked: checked }).then(() => 
+                    {
+                        
+                        //props.handler({editTodoId: "", reRender: true});
+                        //setState(previousState => { return { ...previousState, checked: checked }});
+                    });
+                };
+                fetchData();
+            } 
+            catch (err) 
+            {
+                console.log(err);
+            }
         }
         else if(event.target.id == "todo-card-right" || event.target.id == "edit-todo-icon" || event.target.id == "edit-todo-icon-path")
         {

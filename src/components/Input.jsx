@@ -6,9 +6,7 @@ import '../index.css';
 export default function Input(props) 
 {
     const [state, setState] = useState({
-        inputValue: "",
-        currentDate: new Date(),
-        currentList: props.list
+        inputValue: ""
     });
 
     useEffect(() => {
@@ -33,22 +31,15 @@ export default function Input(props)
                     const userid = localStorage.getItem("userid");
     
                     if(userid == null) return;
-    
-                    let currentList = state.currentList;
-    
-                    if(currentList == null)
-                    { 
-                        currentList = "";
-                    }
 
                     await addDoc(collection(db, "tasks"), 
                     { 
                         checked: "false", 
-                        list: state.currentList, 
+                        list: props.list, 
                         text: state.inputValue, 
                         userid: userid,
                         details: "",
-                        created: state.currentDate 
+                        created: new Date()
                     }).then(() => {
                         setState(previousState => { return { ...previousState, inputValue: "" }});
                         props.handler({reRender: true});
@@ -84,7 +75,7 @@ export default function Input(props)
                 </svg>
             </div>
             <div id="input-right">
-                <input id="add-todo-input" placeholder="Add a to-do..." type="text" onChange={handleChange} value={state.inputValue} onKeyDown={handleKeyDown}/>
+                <input id="add-todo-input" placeholder="Add a to-do..." type="text" onChange={handleChange} value={state.inputValue} onKeyDown={handleKeyDown} autoComplete={String(Math.random()).slice(2)}/>
             </div>
         </div>
     );

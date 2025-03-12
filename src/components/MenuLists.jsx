@@ -9,7 +9,7 @@ export default function MenuLists(props)
 {
     const [state, setState] = useState({
         currentList: localStorage.getItem("list") == null ? "" : localStorage.getItem("list"),
-        lists: []
+        lists: props.lists
     });
     
     useEffect(() => 
@@ -17,12 +17,15 @@ export default function MenuLists(props)
         console.log("MenuLists render");
         handlePosition();
     });
-    
+
     useEffect(() => 
     {
         window.addEventListener('resize', handlePosition);
+    },[]);
 
-        if(state.lists.length === 0)
+    useEffect(() => 
+    {
+        if(state.lists.length === 0 || props.lists.length != state.lists.length)
         {
             try
             {
@@ -33,7 +36,11 @@ export default function MenuLists(props)
                         if (snap.exists()) 
                         {
                             setState(previousState => { return { ...previousState, lists: snap.data().lists }});
-                            props.handler({lists: snap.data().lists});
+
+                            if(props.lists.toString() !== snap.data().lists.toString())
+                            {
+                                props.handler({lists: snap.data().lists});
+                            }
                         }
                     });
                 };
@@ -45,7 +52,7 @@ export default function MenuLists(props)
             } 
         }
         
-    },[]);
+    },[props.lists]);
 
     function handleState(args)
     {
@@ -53,6 +60,10 @@ export default function MenuLists(props)
         {
             setState(previousState => { return { ...previousState, currentList: args.currentList }});
             props.handler({currentList: args.currentList});
+        }
+        else if (args.hasOwnProperty("editListId")) 
+        {
+            props.handler({editListId: args.editListId});
         }
     }
 
@@ -88,6 +99,10 @@ export default function MenuLists(props)
         {
             alert("add");
         }
+        else if(event.target.id == "menu-outer")
+        {
+            props.handler({menuListsOpen:"toggle"});
+        }
     }
 
     function GetLists(props)
@@ -107,22 +122,24 @@ export default function MenuLists(props)
     if(props.open == false) return(<></>);
 
     return (
-        <div id="menu-lists-wrapper">
-            <div id="menu-list-header">
-                <div id="menu-list-header-left" onClick={handleClick}>
-                    <svg id="lists-menu-close" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 16 16">
-                        <path id="lists-menu-close-path" d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"></path>
-                    </svg>
+        <div id="menu-outer" onClick={handleClick}>
+            <div id="menu-lists-wrapper">
+                <div id="menu-list-header">
+                    <div id="menu-list-header-left" onClick={handleClick}>
+                        <svg id="lists-menu-close" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 16 16">
+                            <path id="lists-menu-close-path" d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"></path>
+                        </svg>
+                    </div>
+                    <div id="menu-list-header-center">Lists</div>
+                    <div id="menu-list-header-right" onClick={handleClick}>
+                        <svg id="lists-menu-add" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 16 16">
+                            <path id="lists-menu-add-path" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"></path>
+                        </svg>
+                    </div>
                 </div>
-                <div id="menu-list-header-center">Lists</div>
-                <div id="menu-list-header-right" onClick={handleClick}>
-                    <svg id="lists-menu-add" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="white" viewBox="0 0 16 16">
-                        <path id="lists-menu-add-path" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"></path>
-                    </svg>
-                </div>
-            </div>
 
-            <GetLists lists={state.lists}/>
+                <GetLists lists={state.lists}/>
+            </div>
         </div>
     );
 }

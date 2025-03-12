@@ -5,15 +5,10 @@ import '../index.css';
 
 export default function EditTodo(props) 
 {
-    if(props.todoid == "") return(<></>);
-
     const [state, setState] = useState({
         title: "",
         list: "",
         details: "",
-        todoid: props.todoid,
-        userid: props.userid,
-        lists: props.lists
     });
 
     useEffect(() => {
@@ -22,30 +17,33 @@ export default function EditTodo(props)
 
     useEffect(() => 
     {
-        try
+        if(props.todoid != "")
         {
-            const fetchData = async () => 
+            try
             {
-                await getDoc(doc(db, 'tasks', state.todoid)).then((snap) => 
+                const fetchData = async () => 
                 {
-                    if (snap.exists()) 
+                    await getDoc(doc(db, 'tasks', props.todoid)).then((snap) => 
                     {
-                        setState(previousState => { return { 
-                            ...previousState, 
-                            title: snap.data().text, 
-                            list: snap.data().list,
-                            details: snap.data().details 
-                        }});
-                    }
-                });
-            };
-            fetchData();
+                        if (snap.exists()) 
+                        {
+                            setState(previousState => { return { 
+                                ...previousState, 
+                                title: snap.data().text, 
+                                list: snap.data().list,
+                                details: snap.data().details
+                            }});
+                        }
+                    });
+                };
+                fetchData();
+            }
+            catch (err) 
+            {
+                console.log(err);
+            } 
         }
-        catch (err) 
-        {
-            console.log(err);
-        } 
-    },[]);
+    },[props.todoid]);
 
     function handleChange(event)
     {
@@ -67,7 +65,7 @@ export default function EditTodo(props)
     {
         if(event.target.id == "modal-close" || event.target.id == "modal-close-icon" || event.target.id == "modal-close-path")
         {
-            setState(0);
+            setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
             props.handler({editTodoId: ""});
         }
         else if(event.target.id == "modal-delete-button")
@@ -76,9 +74,9 @@ export default function EditTodo(props)
             {
                 const fetchData = async () => 
                 {
-                    await deleteDoc(doc(db, "tasks", state.todoid)).then(() => 
+                    await deleteDoc(doc(db, "tasks", props.todoid)).then(() => 
                     {
-                        setState(0);
+                        setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
                         props.handler({editTodoId: "", reRender: true});
                     });
                 };
@@ -95,14 +93,14 @@ export default function EditTodo(props)
             {
                 const fetchData = async () => 
                 {
-                    await updateDoc(doc(db, "tasks", state.todoid), 
+                    await updateDoc(doc(db, "tasks", props.todoid), 
                     { 
                         text: state.title,
                         list: state.list,
                         details: state.details
                     }).then(() => 
                     {
-                        setState(0);
+                        setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
                         props.handler({editTodoId: "", reRender: true});
                     });
                 };
@@ -115,24 +113,27 @@ export default function EditTodo(props)
         }
         else if(event.target.id == "task-modal-wrapper")
         {
-            setState(0);
-            props.handler({editTodoId: "", reRender: true});
+            setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
+            props.handler({editTodoId: ""});
         }
     }
 
-    function GetOptions(props)
+    function GetOptions(args)
     {
-        if(state.lists.empty === true) return (<></>);
+        if(props.lists.empty === true) return (<></>);
 
         const options = [];
 
-        state.lists.forEach((list) => 
+        props.lists.forEach((list) => 
         {
             options.push(<option key={Math.random()} value={list}>{list}</option>);
         });
         
         return (options);
     }
+
+    if(props.todoid == "") return(<></>);
+
 
     return (
         <>

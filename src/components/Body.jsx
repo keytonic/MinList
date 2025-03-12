@@ -6,8 +6,11 @@ import TodoCard from './TodoCard';
 import MenuOptions from './MenuOptions';
 import MenuLists from './MenuLists';
 import EditTodo from './EditTodo';
+import EditList from './EditList';
+import AddList from './AddList';
+import About from './About';
 
-import { collection, addDoc, getDocs, getDoc, query, where ,updateDoc,doc, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import {db} from "../Firebase"
 
 import '../index.css'; 
@@ -18,6 +21,7 @@ export default function Body(props)
         menuOptionsOpen: false,
         menuListsOpen: false,
         editTodoId: "",
+        editListId: "",
         currentList: localStorage.getItem("list") == null ? "" : localStorage.getItem("list"),
         showAll: localStorage.getItem("showAll") == null ? "false" : localStorage.getItem("showAll"),
         userid: localStorage.getItem("userid"),
@@ -46,6 +50,10 @@ export default function Body(props)
                         {
                             setState(previousState => { return { ...previousState, tasks: snap }});
                         }
+                        else
+                        {
+                            setState(previousState => { return { ...previousState, tasks: null }});
+                        }
                     });
                 };
                 fetchData();
@@ -68,10 +76,6 @@ export default function Body(props)
         {
             setState(previousState => { return { ...previousState, menuOptionsOpen: !state.menuOptionsOpen, menuListsOpen: false }});
         }
-        else if (args.hasOwnProperty("currentList")) 
-        {
-            setState(previousState => { return { ...previousState, currentList: args.currentList }});
-        }
         else if (args.hasOwnProperty("showAll")) 
         {
             setState(previousState => { return { ...previousState, showAll: args.showAll }});
@@ -84,16 +88,24 @@ export default function Body(props)
         {
             setState(previousState => { return { ...previousState, editTodoId: args.editTodoId }});
         }
-        else if (args.hasOwnProperty("lists")) 
+        else if (args.hasOwnProperty("editListId")) 
+        {
+            setState(previousState => { return { ...previousState, editListId: args.editListId }});
+        }
+        
+        else if (args.hasOwnProperty("currentList")) 
+        {
+            setState(previousState => { return { ...previousState, currentList: args.currentList }});
+        }
+        //dont make an elseif
+        if (args.hasOwnProperty("lists")) 
         {
             setState(previousState => { return { ...previousState, lists: args.lists }});
         }
-        //dont make an elseif
         if (args.hasOwnProperty("reRender")) 
         {
             setState(previousState => { return { ...previousState, reRender: !state.reRender }});
         }
-
     }
 
     function GetTodos(props)
@@ -106,6 +118,8 @@ export default function Body(props)
         {
             state.tasks.forEach((doc) => 
             {
+
+                //console.log(doc);
                 tasks.push(<TodoCard checked={doc.data().checked} text={doc.data().text} id={doc.id} key={doc.id} handler={handleState}/>);
             });
         }
@@ -119,9 +133,11 @@ export default function Body(props)
                 <Input list={state.currentList} handler={handleState} />
                 <GetTodos />
             </div>
-            <MenuLists open={state.menuListsOpen} handler={handleState} userid={state.userid} />
-            <MenuOptions open={state.menuOptionsOpen} handler={handleState} />
+            <MenuLists open={state.menuListsOpen} handler={handleState} userid={state.userid} lists={state.lists}/>
+            <MenuOptions open={state.menuOptionsOpen} handler={handleState} lists={state.lists}/>
             <EditTodo todoid={state.editTodoId} handler={handleState} userid={state.userid} lists={state.lists}/>
+            <EditList listid={state.editListId} handler={handleState} userid={state.userid} lists={state.lists} currentlist={state.currentList}/>
+            <AddList />
         </>
     );
 }
