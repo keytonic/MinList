@@ -15,4 +15,5 @@ A "to-do" style Progressive Web App made with following technologies:
  - forgot password retrieval
  - figure out scroll bars for long lists
  - if user id is null redirect to login page
+ - add install button to options menu
 -->

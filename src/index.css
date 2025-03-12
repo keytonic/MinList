@@ -242,6 +242,7 @@ svg:hover {
     font-weight: 300;
     padding-left: 10px;
     white-space: nowrap;
+    justify-content: center;
 }
 #list-card-left,
 #list-card-right {
@@ -762,7 +763,7 @@ select
     height: calc(100vh / 2);
     min-width: 350px;
     min-height: 400px;
-    xbackground-color: white;
+    /*background-color: white;*/
     border-radius: 2px;
     display: flex;
     flex-direction: column;
@@ -806,7 +807,7 @@ select
 .modal-footer
 {
     height: 50px;
-    xbackground-color: #4d708e;
+    /*background-color: #4d708e;*/
     overflow: hidden;
     border-radius: 2px;
     display: flex;

@@ -63,10 +63,17 @@ export default function EditTodo(props)
 
     function handleClick(event)
     {
-        if(event.target.id == "modal-close" || event.target.id == "modal-close-icon" || event.target.id == "modal-close-path")
+        if
+        (
+            event.target.id == "modal-close" || 
+            event.target.id == "modal-close-icon" || 
+            event.target.id == "modal-close-path" ||
+            event.target.id == "task-modal-wrapper"
+        )
         {
             setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
             props.handler({editTodoId: ""});
+            return;
         }
         else if(event.target.id == "modal-delete-button")
         {
@@ -78,6 +85,7 @@ export default function EditTodo(props)
                     {
                         setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
                         props.handler({editTodoId: "", reRender: true});
+                        return;
                     });
                 };
                 fetchData();
@@ -102,6 +110,7 @@ export default function EditTodo(props)
                     {
                         setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
                         props.handler({editTodoId: "", reRender: true});
+                        return;
                     });
                 };
                 fetchData();
@@ -110,11 +119,6 @@ export default function EditTodo(props)
             {
                 console.log(err);
             }
-        }
-        else if(event.target.id == "task-modal-wrapper")
-        {
-            setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
-            props.handler({editTodoId: ""});
         }
     }
 

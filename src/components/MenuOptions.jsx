@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import '../index.css'; 
-import OptionCard from './OptionCard';
+import React, { useEffect } from "react";
 import { useNavigate} from "react-router-dom";
+import OptionCard from './OptionCard';
+import '../index.css'; 
 
 export default function MenuOptions(props) 
 {
-    const [state, setState] = useState(0);
-
     const navigate = useNavigate();
 
     useEffect(() => 
@@ -63,7 +61,7 @@ export default function MenuOptions(props)
         }
         else if(event.target.id == "menu-options-header-left" || event.target.id == "about-icon" || event.target.id == "about-path")
         {
-            alert("about");
+            props.handler({aboutOpen:true});
         }
         else if(event.target.id == "button-logout")
         {

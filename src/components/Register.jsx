@@ -1,27 +1,18 @@
-
-
-
-import React, { useState, useEffect } from "react";
-import '../index.css'; 
-
-
-import { useRef } from 'react'
-import bcrypt from 'bcryptjs'
-import {db} from "../Firebase"
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import React, { useEffect, useRef } from "react";
 import { Link , useNavigate} from "react-router-dom";
-
-
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import {db} from "../Firebase"
+import bcrypt from 'bcryptjs'
+import '../index.css'; 
 
 export default function Register(props) 
 {
-    const [state, setState] = useState(0);
-
     useEffect(() => {
         console.log("Register render");
     });
 
-    useEffect(() => {
+    useEffect(() => 
+    {
         if(localStorage.getItem("accept-cookies") == null)
         {
             const alert_bar = document.getElementById("login-bar-alert");
@@ -33,10 +24,7 @@ export default function Register(props)
         }
     },[]);
 
-
-
     const navigate = useNavigate();
-
     const salt = bcrypt.genSaltSync(10);
     const emailRef = useRef();
     const usernameRef = useRef();
@@ -144,13 +132,14 @@ export default function Register(props)
         if(data != null)
         {
             document.getElementById("alert_register").innerText = "Email already registered.";
-            //console.log("Email already registered.");
             return;
         }
 
-        const docRef = await addDoc(collection(db, "users"), { username: username, email: email, password: hashedPassword, lists: [] });
-        //console.log(`New user added email: ${email} username: ${username} id: ${docRef.id}`);
-        navigate('/login');
+        await addDoc(collection(db, "users"), { username: username, email: email, password: hashedPassword, lists: [] }).then(() => 
+        {
+            navigate('/login');
+        });
+        
     }
 
     return (
@@ -210,4 +199,3 @@ export default function Register(props)
         </>
     );
 }
-

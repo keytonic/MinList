@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import '../index.css'; 
-import ListCard from './ListCard';
-
-import { collection, addDoc, getDocs, getDoc, query, where ,updateDoc,doc, orderBy } from "firebase/firestore";
+import { getDoc, doc} from "firebase/firestore";
 import {db} from "../Firebase"
+import ListCard from './ListCard';
+import '../index.css'; 
 
 export default function MenuLists(props) 
 {
@@ -97,7 +96,7 @@ export default function MenuLists(props)
         }
         else if(event.target.id == "menu-list-header-right" || event.target.id == "lists-menu-add" || event.target.id == "lists-menu-add-path")
         {
-            alert("add");
+            props.handler({addListOpen:true});
         }
         else if(event.target.id == "menu-outer")
         {

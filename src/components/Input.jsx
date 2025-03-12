@@ -28,16 +28,14 @@ export default function Input(props)
             {
                 const fetchData = async () => 
                 {
-                    const userid = localStorage.getItem("userid");
-    
-                    if(userid == null) return;
+                    if(props.userid == null) return;
 
                     await addDoc(collection(db, "tasks"), 
                     { 
                         checked: "false", 
                         list: props.list, 
                         text: state.inputValue, 
-                        userid: userid,
+                        userid: props.userid,
                         details: "",
                         created: new Date()
                     }).then(() => {

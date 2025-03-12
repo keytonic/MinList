@@ -1,20 +1,12 @@
-
-
-
-import React, { useState, useEffect } from "react";
-import '../index.css'; 
-
-
+import React, { useEffect } from "react";
 import { Link , useNavigate } from "react-router-dom";
+import '../index.css'; 
 
 export default function Home(props) 
 {
-    const [state, setState] = useState(0);
-
     useEffect(() => {
         console.log("Home render");
     });
-
 
     const navigate = useNavigate();
 
@@ -40,16 +32,12 @@ export default function Home(props)
             listenToUserAction();
         });
 
-
-
         function listenToUserAction() {
             document.getElementById("installButton").addEventListener("click", presentAddToHome);
         }
 
-
-        // present install prompt to user
         function presentAddToHome() {
-            promptEvent.prompt();  // Wait for the user to respond to the prompt
+            promptEvent.prompt();  
             promptEvent.userChoice
             .then(choice => {
                 if (choice.outcome === 'accepted') {
@@ -121,4 +109,3 @@ export default function Home(props)
         </>
     );
 }
-

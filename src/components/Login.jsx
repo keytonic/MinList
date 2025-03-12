@@ -1,20 +1,12 @@
-
-import { useRef } from 'react'
-import bcrypt from 'bcryptjs'
-import {db} from "../Firebase"
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import React, {  useEffect, useRef } from "react";
 import { Link , useNavigate} from "react-router-dom";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import {db} from "../Firebase"
+import bcrypt from 'bcryptjs'
 import '../index.css'
-import MinList from '../assets/minlist.svg'
-
-
-import React, { useState, useEffect } from "react";
-import '../index.css'; 
 
 export default function Login(props) 
 {
-    const [state, setState] = useState(0);
-
     useEffect(() => {
         console.log("Login render");
     });
@@ -32,7 +24,6 @@ export default function Login(props)
     },[]);
 
     const navigate = useNavigate();
-
     const emailRef = useRef();
     const passwordRef = useRef();
 

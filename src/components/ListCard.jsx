@@ -17,9 +17,6 @@ export default function ListCard(props)
     {
         if(event.target.id == "list-card-left" || event.target.id == "lists-menu-check" || event.target.id == "lists-menu-check-path")
         {
-            //let checked = !state.checked;
-            //setState(previousState => { return { ...previousState, checked: checked}});
-
             if(localStorage.getItem("list") == state.text)
             {
                 localStorage.removeItem("list");

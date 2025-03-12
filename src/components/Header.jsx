@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import '../index.css'; 
 
 export default function Header(props) 
 {
-    const [state, setState] = useState();
-
     useEffect(() => {
         console.log("Header render");
     });

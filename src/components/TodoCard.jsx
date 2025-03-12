@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, addDoc, getDocs, getDoc, query, where ,updateDoc,doc, orderBy } from "firebase/firestore";
+import { updateDoc,doc } from "firebase/firestore";
 import {db} from "../Firebase"
 import '../index.css'; 
 
@@ -29,9 +29,7 @@ export default function TodoCard(props)
                 {
                     await updateDoc(doc(db, "tasks", state.id), { checked: checked }).then(() => 
                     {
-                        
                         //props.handler({editTodoId: "", reRender: true});
-                        //setState(previousState => { return { ...previousState, checked: checked }});
                     });
                 };
                 fetchData();

@@ -20,10 +20,17 @@ export default function EditList(props)
     
     function handleClick(event)
     {
-        if(event.target.id == "modal-close" || event.target.id == "modal-close-icon" || event.target.id == "modal-close-path")
+        if
+        (
+            event.target.id == "modal-close" || 
+            event.target.id == "modal-close-icon" || 
+            event.target.id == "modal-close-path" ||
+            event.target.id == "task-modal-wrapper"
+        )
         {
             setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
             props.handler({editListId: ""});
+            return;
         }
         else if(event.target.id == "modal-delete-button")
         {
@@ -33,6 +40,7 @@ export default function EditList(props)
             {
                 localStorage.removeItem("list");
                 props.handler({currentList: ""});
+                return;
             }
 
             try
@@ -43,6 +51,7 @@ export default function EditList(props)
                     {
                         props.handler({editListId: "", lists: newLists});
                         setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
+                        return;
                     });
                 };
                 fetchData();
@@ -80,6 +89,7 @@ export default function EditList(props)
                     {
                         props.handler({editListId: "", lists: []});
                         setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
+                        return;
                     });
                 };
                 fetchData();
@@ -89,11 +99,6 @@ export default function EditList(props)
                 console.log(err);
             } 
 
-        }
-        else if(event.target.id == "task-modal-wrapper")
-        {
-            setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
-            props.handler({editListId: ""});
         }
     }
 

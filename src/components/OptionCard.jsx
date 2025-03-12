@@ -15,7 +15,6 @@ export default function OptionCard(props)
 
     function handleClick(event)
     {
-        
         if(event.target.id == "option-card-left" || event.target.id == "options-menu-check" || event.target.id == "options-menu-check-path")
         {
             let checked = !state.checked;
@@ -25,7 +24,6 @@ export default function OptionCard(props)
             const dynamicObject = {[state.name]: (checked == true ? "true" : "false")};
             props.handler(dynamicObject);
         }
-
     }
 
     let disp = (state.checked == true ? "unset" : "none");
