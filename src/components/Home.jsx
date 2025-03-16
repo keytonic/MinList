@@ -3,6 +3,8 @@ import { Link , useNavigate } from "react-router-dom";
 
 import '../index.css'; 
 
+import Phones from '../assets/phones.png';
+
 export default function Home(props) 
 {
     const navigate = useNavigate();
@@ -19,29 +21,11 @@ export default function Home(props)
             }
         }
 
-        document.documentElement.style.backgroundImage = `linear-gradient(180deg, #88a5bf, #f4f0f0)`;
+        //document.documentElement.style.backgroundImage = `linear-gradient(180deg, #88a5bf, #f4f0f0)`;
+        document.documentElement.style.backgroundImage = "unset";
+        document.documentElement.style.backgroundColor = "white";
         
     }, []);
-
-    function presentAddToHome() 
-    {
-        props.install.prompt();  
-
-        props.install.userChoice.then(choice => 
-        {
-            if (choice.outcome === 'accepted') 
-            {
-                //console.log('User accepted');
-            } 
-            else 
-            {
-                //console.log('User dismissed');
-                
-            }
-
-            document.getElementById("installButton").style.display = "none";
-        });
-    }
 
     function login_register(event)
     {
@@ -106,8 +90,25 @@ export default function Home(props)
                 </div>
             </div>
             <div id="front-wrapper">
-                <span>Splash page content comming soon!</span>
-                <button id="installButton" type="button" style={{display: dsp}} onClick={presentAddToHome}>Install</button>
+
+
+                <div id="intro-wrapper">
+                    <div id="intro">
+                        <div id="intro-left">
+                            <div id="tag-line">Keep Your Goals in Sight.</div>
+                            <div id="some-text">MinList is the simplest way to keep your tasks organized and always in sight, so nothing falls through the cracks. With its clean, distraction-free interface, MinList helps you focus on what matters most and effortlessly stay on top of your to-dos. Whether you're managing daily tasks or long-term goals, MinList ensures you never lose sight of what needs to be done.</div>
+                            <div id="intro-button"><button id="get-started" onClick={login_register}>Create a free account</button></div>
+                        </div>
+                        <div id="intro-right">
+                            <img id="phones" src={Phones} />
+                        </div>
+                    </div>
+                </div>
+                <div id="more-intro">
+                    MinList for work, home and play.<br />Accomplish more during your day.
+                </div>
+
+
             </div>
         </>
     );

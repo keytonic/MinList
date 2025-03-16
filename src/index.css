@@ -362,9 +362,10 @@ svg:hover {
 #front-wrapper {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
     flex: 1;
+    width: 100%;
 }
 #installButton {
     /*display: none;*/
@@ -394,11 +395,12 @@ svg:hover {
     position: sticky;
     top: 0;
     width: 100%;
+    z-index: 9999;
 }
 .login-bar-alert {
     background-color: #e8e8e8;
     width: 100%;
-    min-height: 50px;
+    min-height: 60px;
     border-bottom: 1px solid #c0c0c0;
     color: #747474;
     display: none;
@@ -418,10 +420,11 @@ svg:hover {
     margin-left: 4px;
 }
 #minlist-logo {
-    height: 32px;
-    width: 32px;
+    height: 40px;
+    min-height: 40px;
+    width: 40px;
+    min-width: 40px;
     fill: #4D708E;
-    margin: 0 0 0 10px;
 }
 .title-cell {
     height: 100%;
@@ -494,8 +497,8 @@ label {
 .login-bar {
     background-color: #fff;
     width: 100%;
-    height: 50px;
-    min-height: 50px;
+    height: 60px;
+    min-height: 60px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -509,8 +512,11 @@ label {
     align-items: center;
 }
 #close-alert {
-    width: 45px;
-    justify-content: flex-start;
+    width: 60px;
+    height: 60px;
+    justify-content: center;
+    display: flex
+;
 }
 #alert-text {
     width: calc(100% - 45px);
@@ -530,7 +536,7 @@ label {
     margin-left: 3px;
 }
 #login-bar-logo {
-    width: auto;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: row;
@@ -539,6 +545,7 @@ label {
 }
 #login-bar-logo a {
     height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
 }
@@ -554,7 +561,7 @@ label {
     margin-left: 0;
 }
 #sign-in {
-    height: 33px;
+    height: 40px;
     background-color: #fbfcfd;
     border: none;
     color: #777;
@@ -573,7 +580,7 @@ label {
 }
 #get-started,
 button {
-    height: 33px;
+    height: 40px;
     background-color: #4D708E;
     border: none;
     color: #fff;
@@ -976,9 +983,9 @@ select
 
 #title-small
 {
-
-    height: 24px;
-    margin-left: 10px;
+    height: auto;
+    max-height: 32px;
+    margin-left: 0px;
 }
 
 #title-small g
@@ -1016,6 +1023,22 @@ select
     margin-left: 10px !important;
 }
 
+@media (max-width: 350px) 
+{
+    #title-small
+    {
+        display: none;
+    }
+}
+
+@media (max-width: 420px) 
+{
+    #title-small
+    {
+        xheight:18px;
+    }
+}
+
 @media (max-width: 400px) 
 {
     .modal-window
@@ -1024,10 +1047,7 @@ select
         min-width:unset;
     }
 
-    #title-small
-    {
-        display: none;
-    }
+
 }
 
 #installButton,
@@ -1068,4 +1088,149 @@ select
     flex-direction: column;
     align-items: center;
     padding-bottom: 50px;
+}
+
+#intro-wrapper
+{
+    width: 100%;
+    height: auto;
+    display: flex;
+    background-image: linear-gradient(220deg,rgb(136, 165, 191), rgb(244, 240, 240));
+    padding-top: 30px;
+}
+
+
+#intro
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    overflow: hidden;
+    color: #4d708e;
+}
+
+#phones
+{
+    width: 460px;
+    height: 415px;
+    position: relative;
+    bottom: -5px;
+}
+
+#intro-left
+{
+    width: 50%;
+
+}
+
+#intro-right
+{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#tag-line
+{
+    font-size: 40px;
+    font-weight: 200;
+    letter-spacing: -2px;
+    padding: 30px;
+    padding-bottom: 0;
+}
+
+#some-text
+{
+    text-align: justify;
+    padding: 30px;
+}
+
+#intro-button
+{
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 900px) 
+{
+    #intro
+    {
+        flex-direction: column;
+    }
+    #intro-left
+    {
+        width: 75%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #intro-button
+    {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 650px) 
+{
+
+    #tag-line
+    {
+        font-size: 32px;
+    }
+
+}
+
+
+
+#intro-button
+{
+    
+}
+
+#more-intro
+{
+    width: 100%;
+    border: 1px solid #e8e8e8;
+    min-height: 100px;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+
+
+    font-size: 32px;
+    line-height: 58px;
+    font-weight: 200;
+    letter-spacing: -1px;
+
+    color: #4d708e;
+    white-space: nowrap;
+
+}
+
+
+@media (max-width: 550px) 
+{
+    #intro-left
+    {
+        width: 100%;
+    }
+    #phones
+    {
+        width: 300px;
+        height: 271px;
+        position: relative;
+        bottom: -5px;
+    }
+    #more-intro
+    {
+        font-size: 24px;
+
+    }
+
+
 }
