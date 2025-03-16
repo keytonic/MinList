@@ -8,11 +8,8 @@ export default function EditTodo(props)
     const [state, setState] = useState({
         title: "",
         list: "",
+        oldList: "",
         details: "",
-    });
-
-    useEffect(() => {
-        console.log("EditTodo render");
     });
 
     useEffect(() => 
@@ -31,6 +28,7 @@ export default function EditTodo(props)
                                 ...previousState, 
                                 title: snap.data().text, 
                                 list: snap.data().list,
+                                oldList: snap.data().list,
                                 details: snap.data().details
                             }});
                         }
@@ -110,6 +108,12 @@ export default function EditTodo(props)
                     {
                         setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
                         props.handler({editTodoId: "", reRender: true});
+                        //update counts incase the task was moved from one list to another
+                        const storedObjectString = localStorage.getItem("counts");
+                        const storedObject = JSON.parse(storedObjectString);
+                        storedObject[state.oldList]--;
+                        storedObject[state.list]++;
+                        localStorage.setItem("counts", JSON.stringify(storedObject));
                         return;
                     });
                 };
@@ -122,9 +126,9 @@ export default function EditTodo(props)
         }
     }
 
-    function GetOptions(args)
+    function GetLists(args)
     {
-        if(props.lists.empty === true) return (<></>);
+        if(props.lists.length === 0) return (<></>);
 
         const options = [];
 
@@ -133,11 +137,18 @@ export default function EditTodo(props)
             options.push(<option key={Math.random()} value={list}>{list}</option>);
         });
         
-        return (options);
+        return (
+            <div className="option-row task-row">
+                <span  id="task-modal-list" className="modal-title-cell">List:</span>
+                <select id="task-modal-list-text" value={state.list} onChange={handleChange}>
+                    <option value=""></option>
+                    {options}
+                </select>
+            </div>
+        );
     }
 
     if(props.todoid == "") return(<></>);
-
 
     return (
         <>
@@ -157,12 +168,9 @@ export default function EditTodo(props)
                             <span  id="task-modal-title" className="modal-title-cell">Title:</span>
                             <input id="task-modal-title-text" type="text" value={state.title} onChange={handleChange}/>
                         </div>
-                        <div className="option-row task-row">
-                            <span  id="task-modal-list" className="modal-title-cell">List:</span>
-                            <select id="task-modal-list-text" value={state.list} onChange={handleChange}>
-                                <GetOptions />
-                            </select>
-                        </div>
+
+                        <GetLists />
+
                         <div className="option-row task-row task-row-custom">
                             <span  id="task-modal-details" className="modal-title-cell">Details:</span>
                             <textarea id="task-modal-details-text" className="details-text-custom" rows="4" cols="50" value={state.details} onChange={handleChange}></textarea>

@@ -9,9 +9,44 @@ export default function Input(props)
         inputValue: ""
     });
 
-    useEffect(() => {
-        console.log("Input render");
+    useEffect(() => 
+    {
+        handlePosition();
     });
+
+    useEffect(() => 
+    {
+        window.addEventListener('scroll', handlePosition);
+    },[]);
+
+    function handlePosition()
+    {
+        const inputWrapper = document.getElementById("input-wrapper");
+
+        //console.log(window.scrollY);
+
+        if(window.scrollY >= 60)
+        {
+            
+            inputWrapper.style.position = "sticky";
+            inputWrapper.style.top = "0px";
+            inputWrapper.style.zIndex = "1";
+            inputWrapper.style.width = "100%";
+            inputWrapper.style.minHeight = "60px";
+            inputWrapper.style.borderRadius = "0";
+            inputWrapper.style.boxShadow = "0px 4px 7px 3px #00000038";
+        }
+        else
+        {
+            inputWrapper.style.position = "inherit";
+            inputWrapper.style.top = "inherit";
+            inputWrapper.style.zIndex = "inherit";
+            inputWrapper.style.width = "calc(100% - 20px)";
+            inputWrapper.style.minHeight = "50px";
+            inputWrapper.style.borderRadius = "inherit";
+            inputWrapper.style.boxShadow = "unset";
+        }
+    }
 
     function handleClick(event)
     {
@@ -34,7 +69,7 @@ export default function Input(props)
                     { 
                         checked: "false", 
                         list: props.list, 
-                        text: state.inputValue, 
+                        text: toSentenceCase(state.inputValue), 
                         userid: props.userid,
                         details: "",
                         created: new Date()
@@ -63,6 +98,13 @@ export default function Input(props)
         {
             handleClick(event);
         }
+    }
+
+    function toSentenceCase(str) 
+    {
+        if (!str) return "";
+        const sentence = str.toLowerCase();
+        return sentence.charAt(0).toUpperCase() + sentence.slice(1);
     }
 
     return (

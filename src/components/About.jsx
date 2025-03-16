@@ -1,12 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import '../index.css'; 
 
 export default function About(props) 
 {
-    useEffect(() => {
-        console.log("About render");
-    });
-
     function handleClick(event)
     {
         if
@@ -39,10 +35,10 @@ export default function About(props)
                         </div>
                     </div>
                     <div className="modal-body">
-                        <span>About content</span>
+                        <span>Who, what, when, where, why</span>
                     </div>
                     <div className="modal-footer" style={{justifyContent: "center"}}>
-                        <button type="button" id="modal-close-button" onClick={handleClick} style={{ marginRight: "0"}} >Close</button>
+                        <button type="button" id="modal-close-button" onClick={handleClick} style={{ margin: "0", marginBottom: "15px"}} >Close</button>
                     </div>
                 </div>
             </div>

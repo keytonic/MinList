@@ -19,6 +19,47 @@ https://coolors.co/c3cdd1-4d708e-88a5bf-e2f2ff-ffffff-ee6352
     outline: none;
     border-radius: 2px;
 }
+
+html
+{
+    scrollbar-width: thin;
+    scrollbar-color: #9fb5c9 #4d708e;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /*background-image: linear-gradient(180deg, #88a5bf, #f4f0f0)*/;
+    background-repeat: no-repeat;
+    /*background-color: #f4f0f0;*/
+    
+
+
+
+
+    background-image: url(""),linear-gradient(180deg, #88a5bf, #f4f0f0);
+    background-color: #88a5bf;
+    background-attachment: fixed;
+    background-repeat: repeat;
+
+}
+
+body
+{
+    /*
+    background-image: url(/images/water.png);
+    background-size: contain;
+    background-repeat: repeat-y;*/
+}
+
+
+
+
+
+
+
+::-webkit-scrollbar-track {
+background: transparent;
+}
+
+
 html,
 body,
 #root {
@@ -26,7 +67,7 @@ body,
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #88a5bf;
+    
 }
 svg {
     margin: 10px;
@@ -39,7 +80,7 @@ svg:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: linear-gradient(180deg, #88a5bf, #f4f0f0);
+    
 }
 #body-wrapper {
     width: 100%;
@@ -58,6 +99,7 @@ svg:hover {
     justify-content: space-between;
     align-items: center;
     border-radius: 0 !important;
+    opacity: .90;
 }
 #input-wrapper {
     width: calc(100% - 20px);
@@ -68,6 +110,8 @@ svg:hover {
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    opacity: .90;
 }
 .todo-card {
     width: calc(100% - 20px);
@@ -156,6 +200,8 @@ svg:hover {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+
+    opacity: .90;
 }
 #todo-card-left,
 #todo-card-right {
@@ -177,7 +223,11 @@ svg:hover {
 #menu-options-wrapper {
     width: 75%;
     max-width: 600px;
-    height: 600px;
+    min-width: 300px;
+
+    min-height: 600px;
+    max-height: calc(100vh - 10px);
+
     background-image: linear-gradient(180deg, #88a5bf, #f4f0f0);
     position: fixed;
     /*border-radius: 0 0 2px 2px;*/
@@ -185,6 +235,11 @@ svg:hover {
     flex-direction: column;
     align-items: center;
     box-shadow: 4px 4px 7px 3px #00000038;
+    padding-bottom: 10px;
+
+    transition: opacity .5s ease;
+    visibility: hidden;
+    opacity: 0;
 }
 #menu-options-wrapper {
     width: 600px;
@@ -262,13 +317,25 @@ svg:hover {
 }
 .todo-card:hover,
 .list-card:hover,
-.option-card:hover {
+.option-card:hover,
+.option-card-install:hover {
     background-color: #e2f2ff !important;
 }
 #option-card {
     width: calc(100% - 20px);
     height: auto;
-    min-height: 50px;
+    min-height: fit-content;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 2px;
+    border-radius: 2px;
+}
+#option-card-install {
+    width: calc(100% - 20px);
+    height: auto;
+    min-height: fit-content;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -284,7 +351,8 @@ svg:hover {
     width: 50px;
 }
 #option-card-right {
-    height: 100%;
+    /*height: 100%;*/
+    min-height: 30px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -299,7 +367,7 @@ svg:hover {
     flex: 1;
 }
 #installButton {
-    display: none;
+    /*display: none;*/
 }
 .navbar-wrapper {
     display: flex;
@@ -431,6 +499,7 @@ label {
     display: flex;
     flex-direction: row;
     align-items: center;
+    box-shadow: 4px 4px 7px 3px #00000038;
 }
 .login-bar-alert-cell {
     height: 100%;
@@ -461,7 +530,7 @@ label {
     margin-left: 3px;
 }
 #login-bar-logo {
-    width: 140px;
+    width: auto;
     height: 100%;
     display: flex;
     flex-direction: row;
@@ -474,7 +543,7 @@ label {
     align-items: center;
 }
 #login-bar-buttons {
-    width: calc(100% - 140px);
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -633,10 +702,11 @@ a:hover
 #button-logout-wrapper
 {
     height: 100%;
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-around;
 }
 
 #task-modal-wrapper
@@ -754,6 +824,9 @@ select
     justify-content: center;
     background-color: hsl(0deg 0% 0% / 75%);
     
+    transition: opacity .5s ease;
+    visibility: hidden;
+    opacity: 0;
 }
 
 .modal-window
@@ -763,12 +836,18 @@ select
     height: calc(100vh / 2);
     min-width: 350px;
     min-height: 400px;
+    max-width: 600px;
     /*background-color: white;*/
     border-radius: 2px;
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(180deg, #88A5BF, #F4F0F0);
+
+
+
 }
+
+
 
 .modal-header
 {
@@ -886,5 +965,107 @@ select
     position: fixed;
     width: 100%;
     height: 100%;
+    z-index: 99;
     
+}
+
+#list-card-count
+{
+    color: grey;
+}
+
+#title-small
+{
+
+    height: 24px;
+    margin-left: 10px;
+}
+
+#title-small g
+{
+    fill: #4D708E;
+}
+
+#title-small g:hover
+{
+    fill: #EE6352;
+}
+
+#login-bar-logo:hover svg g,
+#login-bar-logo:hover svg
+{
+    fill: #EE6352;
+}
+
+#menu-list-cards
+{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+    scrollbar-width: thin;
+    align-items: center;
+    scrollbar-color: #4d708e transparent;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#sign-in
+{
+    margin-left: 10px !important;
+}
+
+@media (max-width: 400px) 
+{
+    .modal-window
+    {
+        width: 100%;
+        min-width:unset;
+    }
+
+    #title-small
+    {
+        display: none;
+    }
+}
+
+#installButton,
+#button-logout
+{
+    margin: 0;
+    min-width: 75px;
+}
+
+#option-button-right {
+    display: flex;
+    height: 100%;
+    xwidth: 50px;
+    justify-content: center;
+    align-items: center;
+    padding-right: 10px;
+}
+
+#background-select
+{
+    border: 2px solid grey;
+    border-radius: 4px;
+    color: grey;
+    text-shadow: none;
+}
+
+#background-select:hover
+{
+    border-color: #EE6352;
+
+}
+
+#todos-outer
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 50px;
 }

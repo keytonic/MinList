@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { updateDoc, doc } from "firebase/firestore";
+import { updateDoc, doc, deleteDoc, query, collection, where, getDocs} from "firebase/firestore";
+
 import {db} from "../Firebase"
 import '../index.css'; 
 
@@ -8,10 +9,6 @@ export default function EditList(props)
     const [state, setState] = useState({
         title: "",
         oldtitle: ""
-    });
-
-    useEffect(() => {
-        console.log("EditList render");
     });
 
     useEffect(() => {
@@ -36,23 +33,46 @@ export default function EditList(props)
         {
             let newLists = props.lists.filter(item => item !== state.title);
 
-            if(state.title == props.currentList)
+            if(state.title == props.currentlist)
             {
                 localStorage.removeItem("list");
                 props.handler({currentList: ""});
-                return;
             }
 
             try
             {
                 const fetchData = async () => 
                 {
+                    //before we delete the list we need to delete all tasks on the list
+                    const q = query(collection(db, "tasks"), where("userid", "==", props.userid), where("list", "==", state.title));
+
+                    await getDocs(q).then((snap) => 
+                    {
+                        //making sure the lists wasnt empty
+                        if(snap.empty === false)
+                        {
+                            //looping through all of the tasks on the list 
+                            snap.forEach(async (task) => 
+                            {
+                                //and deleting them one by one
+                                await deleteDoc(doc(db, "tasks", task.id));
+                            });
+                        }
+                    });
+
+                    //updating the users lists with this one removed
                     await updateDoc(doc(db, "users", props.userid), { lists: newLists }).then(() => 
                     {
-                        props.handler({editListId: "", lists: newLists});
                         setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
+                        props.handler({editListId: "", lists: newLists});
+                        //remove this list from counts object in local storage
+                        const storedObjectString = localStorage.getItem("counts");
+                        const storedObject = JSON.parse(storedObjectString);
+                        delete storedObject[state.title];
+                        localStorage.setItem("counts", JSON.stringify(storedObject));
                         return;
                     });
+
                 };
                 fetchData();
             }
@@ -84,11 +104,15 @@ export default function EditList(props)
             {
                 const fetchData = async () => 
                 {
-                    
                     await updateDoc(doc(db, "users", props.userid), { lists: newLists }).then(() => 
                     {
-                        props.handler({editListId: "", lists: []});
+                        if(state.oldtitle == props.currentlist)
+                        {
+                            localStorage.setItem("list",state.title);
+                            props.handler({currentList: state.title});
+                        }
                         setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
+                        props.handler({editListId: ""});
                         return;
                     });
                 };
@@ -98,7 +122,6 @@ export default function EditList(props)
             {
                 console.log(err);
             } 
-
         }
     }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { updateDoc, doc } from "firebase/firestore";
 import {db} from "../Firebase"
 import '../index.css'; 
@@ -7,10 +7,6 @@ export default function AddList(props)
 {
     const [state, setState] = useState({
         title: ""
-    });
-
-    useEffect(() => {
-        console.log("AddList render");
     });
 
     function handleClick(event)
@@ -29,8 +25,11 @@ export default function AddList(props)
         }
         else if(event.target.id == "modal-save-button")
         {
-            
-            if(props.lists.includes(state.title) == true)
+            if(state.title == "") return;
+
+            let newList = toSentenceCase(state.title);
+
+            if(props.lists.includes(newList) == true)
             {
                 setState(previousState => { return { ...previousState, title: ""}});
                 props.handler({addListOpen:false});
@@ -38,17 +37,16 @@ export default function AddList(props)
             }
 
             let newLists = props.lists;
-            newLists.push(state.title);
+            newLists.push(newList);
             
             try
             {
                 const fetchData = async () => 
                 {
-                    
                     await updateDoc(doc(db, "users", props.userid), { lists: newLists }).then(() => 
                     {
                         setState(previousState => { return { ...previousState, title: "" }});
-                        props.handler({addListOpen:false, lists: []});
+                        props.handler({addListOpen:false});
                         return;
                     });
                 };
@@ -69,6 +67,16 @@ export default function AddList(props)
         }
     }
 
+    function toSentenceCase(str) 
+    {
+        if (!str) 
+        {
+            return "";
+        }
+        const sentence = str.toLowerCase();
+        return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+    }
+
     if(props.open == false) return (<></>);
     
     return (
@@ -87,7 +95,7 @@ export default function AddList(props)
                     <div className="modal-body">
                         <div className="option-row task-row">
                             <span  id="task-modal-title" className="modal-title-cell">Title:</span>
-                            <input id="task-modal-title-text" type="text" value={state.title} onChange={handleChange}/>
+                            <input id="task-modal-title-text" type="text" value={state.title} onChange={handleChange} />
                         </div>
                     </div>
                     <div className="modal-footer" style={{justifyContent: "center"}}>

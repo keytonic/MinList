@@ -1,36 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import '../index.css'; 
 
 export default function ListCard(props) 
 {
-    const [state, setState] = useState({
-        //checked: ((props.text == props.current) ? true : false),
-        text: props.text,
-        count: 0
-    });
-
-    useEffect(() => {
-        console.log(`ListCard render: ${state.text}`);
-    });
-
     function handleClick(event)
     {
         if(event.target.id == "list-card-left" || event.target.id == "lists-menu-check" || event.target.id == "lists-menu-check-path")
         {
-            if(localStorage.getItem("list") == state.text)
+            if(localStorage.getItem("list") == props.text)
             {
                 localStorage.removeItem("list");
                 props.handler({currentList:""});
             }
             else
             {
-                localStorage.setItem("list", state.text);
-                props.handler({currentList:state.text});
+                localStorage.setItem("list", props.text);
+                props.handler({currentList:props.text});
             }
         }
         else if(event.target.id == "list-card-right" || event.target.id == "lists-menu-edit" || event.target.id == "lists-menu-edit-path")
         {
-            props.handler({editListId: state.text});
+            props.handler({editListId: props.text});
         }
     }
 
@@ -45,6 +35,7 @@ export default function ListCard(props)
                 </svg>
             </div>
             <div id="list-card-center">{props.text}</div>
+            <div id="list-card-count">{props.count}</div>
             <div id="list-card-right" onClick={handleClick}>
                 <svg id="lists-menu-edit" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="grey" viewBox="0 0 16 16">
                     <path id="lists-menu-edit-path" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"></path>

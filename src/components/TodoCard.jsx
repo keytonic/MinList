@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { updateDoc,doc } from "firebase/firestore";
 import {db} from "../Firebase"
 import '../index.css'; 
@@ -6,13 +6,7 @@ import '../index.css';
 export default function TodoCard(props) 
 {
     const [state, setState] = useState({
-        checked: props.checked,
-        text: props.text,
-        id: props.id
-    });
-
-    useEffect(() => {
-        console.log(`TodoCard render: ${state.text}`);
+        checked: props.checked
     });
 
     function handleClick(event)
@@ -21,16 +15,20 @@ export default function TodoCard(props)
         {
             let checked = state.checked == "true" ? "false" : "true";
 
-            setState(previousState => { return { ...previousState, checked: checked }});
-
             try
             {
                 const fetchData = async () => 
                 {
-                    await updateDoc(doc(db, "tasks", state.id), { checked: checked }).then(() => 
+                    setState(previousState => { return { ...previousState, checked: checked }});
+                    await updateDoc(doc(db, "tasks", props.id), { checked: checked });
+
+                    if(checked == "true" && props.showall == "false")
                     {
-                        //props.handler({editTodoId: "", reRender: true});
-                    });
+                        const storedObjectString = localStorage.getItem("counts");
+                        const storedObject = JSON.parse(storedObjectString);
+                        storedObject[props.list] = storedObject[props.list] - 1;
+                        localStorage.setItem("counts", JSON.stringify(storedObject));
+                    }
                 };
                 fetchData();
             } 
@@ -41,13 +39,11 @@ export default function TodoCard(props)
         }
         else if(event.target.id == "todo-card-right" || event.target.id == "edit-todo-icon" || event.target.id == "edit-todo-icon-path")
         {
-            props.handler({editTodoId: state.id});
+            props.handler({editTodoId: props.id});
         }
     }
 
-    //dont render this item if its completed and show all is off
-    let showAll = localStorage.getItem("showAll") == null ? "false" : localStorage.getItem("showAll");
-    if(showAll == "false" && state.checked == "true") return(<></>);
+    if(props.showall == "false" && state.checked == "true") return(<></>);
 
     let disp = state.checked == "true" ? "unset" : "none";
 

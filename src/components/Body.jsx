@@ -1,28 +1,17 @@
 import React, { useState, useEffect} from "react";
 import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 import {db} from "../Firebase"
-
 import Header from './Header';
 import Input from './Input';
 import TodoCard from './TodoCard';
-import MenuOptions from './MenuOptions';
-import MenuLists from './MenuLists';
 import EditTodo from './EditTodo';
-import EditList from './EditList';
-import AddList from './AddList';
-import About from './About';
-
 import '../index.css'; 
 
 export default function Body(props) 
 {
     const [state, setState] = useState({
-        menuOptionsOpen: false,
-        menuListsOpen: false,
         editTodoId: "",
-        editListId: "",
-        addListOpen: false,
-        aboutOpen: false,
+        background: localStorage.getItem("background") == null ? "" : localStorage.getItem("background"),
         currentList: localStorage.getItem("list") == null ? "" : localStorage.getItem("list"),
         showAll: localStorage.getItem("showAll") == null ? "false" : localStorage.getItem("showAll"),
         userid: localStorage.getItem("userid"),
@@ -31,19 +20,23 @@ export default function Body(props)
         lists: []
     });
 
-    useEffect(() => {
-        console.log("Body render");
-    });
-
     useEffect(() => 
     {
         if( state.userid != null)
         {
             try
             {
+                const storedObjectString = localStorage.getItem("counts");
+                const storedObject = JSON.parse(storedObjectString);
+
                 const fetchData = async () => 
                 {
-                    const q = query(collection(db, "tasks"), where("userid", "==", state.userid), where("list", "==", state.currentList), orderBy("text"));
+                    let q = null;
+                    
+                    if(state.showAll == "true")
+                        q = query(collection(db, "tasks"), where("userid", "==", state.userid), where("list", "==", state.currentList), orderBy("text"));
+                    else
+                        q = query(collection(db, "tasks"), where("userid", "==", state.userid), where("list", "==", state.currentList), where("checked", "==", "false"), orderBy("text"));
 
                     await getDocs(q).then((snap) => 
                     {
@@ -55,6 +48,9 @@ export default function Body(props)
                         {
                             setState(previousState => { return { ...previousState, tasks: null }});
                         }
+
+                        const myObject = { ...storedObject, [state.currentList]: snap.size };
+                        localStorage.setItem("counts", JSON.stringify(myObject));
                     });
                 };
                 fetchData();
@@ -64,28 +60,37 @@ export default function Body(props)
                 console.log(err);
             } 
         }
-        
-    },[state.currentList,state.reRender]);
+    },[state.currentList,state.reRender,state.showAll]);
+
+    useEffect(() => 
+    {
+        let modalWrapper = document.getElementsByClassName("modal-wrapper")[0];
+
+        if(modalWrapper != null)
+        {
+            modalWrapper.style.visibility = "visible";
+            modalWrapper.style.opacity = "1";
+        }
+
+    }, [state.editTodoId]);
+
+    useEffect(() => 
+    {
+        if(state.background == "")
+        {
+            document.documentElement.style.backgroundImage = `linear-gradient(180deg, #88a5bf, #f4f0f0)`;
+        }
+        else
+        {
+            document.documentElement.style.backgroundImage = `url(/images/backgrounds/${state.background}.png),linear-gradient(0deg, #88a5bf, #f4f0f0)`;
+        }
+    }, [state.background]);
+
+
 
     function handleState(args)
     {
-        if (args.hasOwnProperty("menuListsOpen")) 
-        {
-            setState(previousState => { return { ...previousState, menuListsOpen: !state.menuListsOpen, menuOptionsOpen: false }});
-        }
-        else if (args.hasOwnProperty("menuOptionsOpen")) 
-        {
-            setState(previousState => { return { ...previousState, menuOptionsOpen: !state.menuOptionsOpen, menuListsOpen: false }});
-        }
-        else if (args.hasOwnProperty("addListOpen")) 
-        {
-            setState(previousState => { return { ...previousState, addListOpen: !state.addListOpen }});
-        }
-        else if (args.hasOwnProperty("aboutOpen")) 
-        {
-            setState(previousState => { return { ...previousState, aboutOpen: !state.aboutOpen }});
-        }
-        else if (args.hasOwnProperty("showAll")) 
+        if (args.hasOwnProperty("showAll")) 
         {
             setState(previousState => { return { ...previousState, showAll: args.showAll }});
         }
@@ -97,16 +102,14 @@ export default function Body(props)
         {
             setState(previousState => { return { ...previousState, editTodoId: args.editTodoId }});
         }
-        else if (args.hasOwnProperty("editListId")) 
-        {
-            setState(previousState => { return { ...previousState, editListId: args.editListId }});
-        }
-        
         else if (args.hasOwnProperty("currentList")) 
         {
             setState(previousState => { return { ...previousState, currentList: args.currentList }});
         }
-        //dont make an elseif
+        else if (args.hasOwnProperty("background")) 
+        {
+            setState(previousState => { return { ...previousState, background: args.background }});
+        }
         if (args.hasOwnProperty("lists")) 
         {
             setState(previousState => { return { ...previousState, lists: args.lists }});
@@ -117,35 +120,40 @@ export default function Body(props)
         }
     }
 
-    function GetTodos(props)
-    {
-        if(state.tasks === null) return (<></>);
-
-        const tasks = [];
-
-        if(state.tasks.empty === false)
-        {
-            state.tasks.forEach((doc) => 
-            {
-                tasks.push(<TodoCard checked={doc.data().checked} text={doc.data().text} id={doc.id} key={doc.id} handler={handleState}/>);
-            });
-        }
-        return (tasks);
-    }
-
     return (
         <>
             <div id="body-wrapper">
-                <Header title={state.currentList} handler={handleState} />
+                <Header title={state.currentList} handler={handleState} lists={state.lists} userid={state.userid} install={props.install}/>
                 <Input list={state.currentList} handler={handleState} userid={state.userid} />
-                <GetTodos />
+                <GetTodos tasks={state.tasks} showall={state.showAll} handler={handleState} list={state.currentList} />
             </div>
-            <MenuLists   open={state.menuListsOpen}   handler={handleState} userid={state.userid} lists={state.lists}/>
-            <MenuOptions open={state.menuOptionsOpen} handler={handleState} lists={state.lists}/>
-            <EditTodo    todoid={state.editTodoId}    handler={handleState} userid={state.userid} lists={state.lists}/>
-            <EditList    listid={state.editListId}    handler={handleState} userid={state.userid} lists={state.lists} currentlist={state.currentList}/>
-            <AddList     open={state.addListOpen}     handler={handleState} lists={state.lists} userid={state.userid}/>
-            <About       open={state.aboutOpen}       handler={handleState} />
+            <EditTodo todoid={state.editTodoId} handler={handleState} userid={state.userid} lists={state.lists}/>
         </>
+    );
+}
+
+function GetTodos(props)
+{
+    if(props.tasks === null) return (<></>);
+
+    function handleState(args)
+    {
+        if (args.hasOwnProperty("editTodoId")) 
+        {
+            props.handler({editTodoId: args.editTodoId});
+        }
+    }
+
+    const buf = [];
+
+    if(props.tasks.size > 0)
+    {
+        props.tasks.forEach((doc) => 
+        {
+            buf.push(<TodoCard checked={doc.data().checked} text={doc.data().text} id={doc.id} key={doc.id} list={doc.data().list} handler={handleState} showall={props.showall}/>);
+        });
+    }
+    return (
+        <div id="todos-outer">{buf}</div>
     );
 }
