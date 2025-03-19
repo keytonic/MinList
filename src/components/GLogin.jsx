@@ -64,13 +64,21 @@ export default function GLogin(props)
                     else
                     {
                         var id = null;
+                        let lists = [];
                         snap.forEach((doc) => {
                             id = doc.id;
+                            lists = doc.data().lists;
                         });
 
                         if(id != null)
                         {
                             //console.log("existing user found, loggin in.");
+
+                            if(lists != [] && lists[0] != undefined)
+                            {
+                                localStorage.setItem("list",lists[0]);
+                            }
+
                             localStorage.setItem("userid", id);
                             updateDoc(doc(db, "users", id), { last: new Date() });
                             props.handler({loggedIn: true});
