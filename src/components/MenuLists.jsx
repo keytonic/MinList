@@ -155,13 +155,22 @@ export default function MenuLists(props)
 
         const listItems = [];
 
-        for (let list of lists) 
+        if(lists.length > 0)
         {
-            count = storedObject[list];
-            listItems.push(<ListCard text={list} handler={handleState} count={count} current={state.currentList} key={lists.indexOf(list)}/>);
+            for (let list of lists) 
+            {
+                count = storedObject[list];
+                listItems.push(<ListCard text={list} handler={handleState} count={count} current={state.currentList} key={lists.indexOf(list)}/>);
+            }
+        }
+        else
+        {
+            listItems.push(<div key={Math.random()} className="speech-bubble">Create your first list here!</div>);
         }
 
-        return listItems;
+        let overflow = lists.length > 0 ? {} : {overflow: "visible"};
+
+        return (<div id="menu-list-cards" style={overflow}>{listItems}</div>);
     }
 
     if(props.open == false) return(<></>);
@@ -183,9 +192,9 @@ export default function MenuLists(props)
                             </svg>
                         </div>
                     </div>
-                    <div id="menu-list-cards">
+                    
                         <GetLists lists={state.lists}/>
-                    </div>
+                    
                 </div>
             </div>
             <EditList    listid={state.editListId}    handler={handleState} userid={props.userid} lists={state.lists} currentlist={state.currentList}/>

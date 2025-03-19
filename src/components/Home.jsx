@@ -4,6 +4,7 @@ import { Link , useNavigate } from "react-router-dom";
 import '../index.css'; 
 
 import Phones from '../assets/phones.png';
+import AllPlatforms from '../assets/all-platforms.png';
 
 export default function Home(props) 
 {
@@ -106,6 +107,27 @@ export default function Home(props)
                     <div id="more-intro">
                     MinList for work, home and play.<br />Accomplish more during your day.
                     </div>
+
+                    <div id="intro-three">
+                        <img id="all-platforms" src={AllPlatforms} />
+
+                    </div>
+
+                    <div id="home-footer">
+                        <div id="footer-top">
+                            <Link to="/">Privacy Policy</Link>
+                            <Link to="/">Terms of Use</Link>
+                            <Link to="/">Contact</Link>
+                        </div>
+                        <hr />
+                        <div id="footer-bottom">
+                        Copyright © {String(new Date().getYear() + 1900)} MinList.net, All Rights Reserved.
+                        </div>
+                    </div>
+
+                    
+
+
                 </div>
 
 
