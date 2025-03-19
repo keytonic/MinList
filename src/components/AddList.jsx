@@ -9,14 +9,27 @@ export default function AddList(props)
         title: ""
     });
 
+    function handleClick2(event)
+    {
+        if
+        (
+            event.target.id == "task-modal-wrapper"
+        )
+        {
+            setState(previousState => { return { ...previousState, title: "" }});
+            props.handler({addListOpen:false});
+            return;
+        }
+    }
+
+
     function handleClick(event)
     {
         if
         (
             event.target.id == "modal-close" || 
             event.target.id == "modal-close-icon" || 
-            event.target.id == "modal-close-path" ||
-            event.target.id == "task-modal-wrapper"
+            event.target.id == "modal-close-path"
         )
         {
             setState(previousState => { return { ...previousState, title: "" }});
@@ -43,7 +56,7 @@ export default function AddList(props)
             {
                 const fetchData = async () => 
                 {
-                    await updateDoc(doc(db, "users", props.userid), { lists: newLists }).then(() => 
+                    await updateDoc(doc(db, "users", props.userid), { lists: newLists, last: new Date() }).then(() => 
                     {
                         setState(previousState => { return { ...previousState, title: "" }});
                         props.handler({addListOpen:false});
@@ -81,7 +94,7 @@ export default function AddList(props)
     
     return (
         <>
-            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick}>
+            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick2}>
                 <div className="modal-window">
                     <div className="modal-header">
                         <div className="modal-nav"></div>

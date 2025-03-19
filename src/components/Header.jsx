@@ -34,12 +34,21 @@ export default function Header(props)
     {
         if(event.target.id == "header-left" || event.target.id == "lists-menu-icon" || event.target.id == "lists-menu-icon-path")
         {
-            document.body.style.overflowY = "hidden";
+            if(state.menuListsOpen == false)
+                document.body.style.overflowY = "hidden";
+            else
+                document.body.style.overflowY = "unset";
+
             setState(previousState => { return { ...previousState, menuListsOpen: !state.menuListsOpen, menuOptionsOpen: false }});
+
+
         }
         else if(event.target.id == "header-right" || event.target.id == "options-menu-icon" || event.target.id == "options-menu-icon-path")
         {
-            document.body.style.overflowY = "hidden";
+            if(state.menuOptionsOpen == false)
+                document.body.style.overflowY = "hidden";
+            else
+                document.body.style.overflowY = "unset";
             //document.getElementById("menu-options-wrapper").style.visibility = "visible";
             setState(previousState => { return { ...previousState, menuOptionsOpen: !state.menuOptionsOpen, menuListsOpen: false }});
         }

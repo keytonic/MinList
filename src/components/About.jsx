@@ -3,6 +3,18 @@ import '../index.css';
 
 export default function About(props) 
 {
+    function handleClick2(event)
+    {
+        if
+        (
+            event.target.id == "task-modal-wrapper"
+        )
+        {
+            props.handler({aboutOpen:false});
+            return;
+        }
+    }
+
     function handleClick(event)
     {
         if
@@ -10,7 +22,6 @@ export default function About(props)
             event.target.id == "modal-close" || 
             event.target.id == "modal-close-icon" || 
             event.target.id == "modal-close-path" ||
-            event.target.id == "task-modal-wrapper" ||
             event.target.id == "modal-close-button"
         )
         {
@@ -23,7 +34,7 @@ export default function About(props)
 
     return (
         <>
-            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick}>
+            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick2}>
                 <div className="modal-window">
                     <div className="modal-header">
                         <div className="modal-nav"></div>

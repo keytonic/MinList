@@ -1,8 +1,10 @@
 import React, {  useEffect, useRef } from "react";
 import { Link , useNavigate} from "react-router-dom";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where,updateDoc, doc } from "firebase/firestore";
 import {db} from "../Firebase"
 import bcrypt from 'bcryptjs'
+import GLogin from './GLogin'
+import FLogin from './FLogin'
 import '../index.css'
 
 
@@ -36,6 +38,14 @@ export default function Login(props)
         {
             document.getElementById("login-bar-alert").style.display = "none";
             localStorage.setItem("accept-cookies", "true");
+        }
+    }
+
+    function handleState(args)
+    {
+        if (args.hasOwnProperty("loggedIn")) 
+        {
+            props.handler({loggedIn: args.loggedIn});
         }
     }
 
@@ -107,6 +117,7 @@ export default function Login(props)
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
         let id = "";
+        let lists = [];
 
         const q = query(collection(db, "users"), where("email", "==", email));
         const querySnapshot = await getDocs(q);
@@ -116,6 +127,7 @@ export default function Login(props)
         {
             data = doc.data();
             id = doc.id;
+            lists = doc.data().lists;
         });
 
         if(data == null)
@@ -128,7 +140,14 @@ export default function Login(props)
 
         if(pass_good == true)
         {
+
+            if(lists != [] && lists[0] != undefined)
+            {
+                localStorage.setItem("list",lists[0]);
+            }
+
             localStorage.setItem("userid", id);
+            updateDoc(doc(db, "users", id), { last: new Date() });
             props.handler({loggedIn: true});
             navigate('/home');
         }
@@ -200,6 +219,8 @@ export default function Login(props)
                         </header>
                     </div>
                 </div>
+                <GLogin handler={handleState} />
+                <FLogin handler={handleState} />
             </div>
         </>
     );

@@ -113,17 +113,28 @@ export default function MenuLists(props)
         }
     }
 
+    function handleClick2(event)
+    {
+        if
+        (
+            event.target.id == "menu-outer"
+        )
+        {
+            document.body.style.overflowY = "unset";
+            props.handler({menuListsOpen:"toggle"});
+        }
+    }
+
     function handleClick(event)
     {
         if
         (
             event.target.id == "menu-list-header-left" || 
             event.target.id == "lists-menu-close" || 
-            event.target.id == "lists-menu-close-path" ||
-            event.target.id == "menu-outer"
+            event.target.id == "lists-menu-close-path"
         )
         {
-            document.body.style.overflowY = "visible";
+            document.body.style.overflowY = "unset";
             props.handler({menuListsOpen:"toggle"});
         }
         else if(event.target.id == "menu-list-header-right" || event.target.id == "lists-menu-add" || event.target.id == "lists-menu-add-path")
@@ -157,7 +168,7 @@ export default function MenuLists(props)
 
     return (
         <>
-            <div id="menu-outer" onClick={handleClick}>
+            <div id="menu-outer" onClick={handleClick2}>
                 <div id="menu-lists-wrapper">
                     <div id="menu-list-header">
                         <div id="menu-list-header-left" onClick={handleClick}>

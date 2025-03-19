@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate} from "react-router-dom";
+import { googleLogout } from '@react-oauth/google';
 import OptionCard from './OptionCard';
 import About from './About';
+import EditUser from './EditUser';
 import '../index.css'; 
 
 export default function MenuOptions(props) 
 {
     const [state, setState] = useState({
         aboutOpen: false,
+        editUserOpen: false,
         background: localStorage.getItem("background") == null ? "" : localStorage.getItem("background")
     });
 
@@ -33,7 +36,18 @@ export default function MenuOptions(props)
             modalWrapper.style.opacity = "1";
         }
 
-    }, [state.aboutOpen]);
+    }, [state.aboutOpen,state.editUserOpen]);
+
+    function logOut()
+    {
+        document.body.style.overflowY = "unset";
+        googleLogout();
+        localStorage.clear();
+        props.handler({loggedIn: false});
+        navigate('/home');
+        return;
+    }
+
 
     function presentAddToHome() 
     {
@@ -65,6 +79,14 @@ export default function MenuOptions(props)
         {
             setState(previousState => { return { ...previousState, aboutOpen: !state.aboutOpen }});
         }
+        else if (args.hasOwnProperty("editUserOpen")) 
+        {
+            setState(previousState => { return { ...previousState, editUserOpen: !state.editUserOpen }});
+        }
+        else if (args.hasOwnProperty("loggedIn")) 
+        {
+            props.handler({loggedIn: props.loggedIn});
+        }
     }
 
     function handlePosition()
@@ -93,28 +115,42 @@ export default function MenuOptions(props)
         }
     }
 
+    function handleClick2(event)
+    {
+        if
+        (
+            event.target.id == "menu-outer"
+        )
+        {
+            document.body.style.overflowY = "unset";
+            props.handler({menuOptionsOpen:false});
+        }
+    }
+
     function handleClick(event)
     {
         if
         (
             event.target.id == "menu-options-header-right" || 
             event.target.id == "options-menu-close" || 
-            event.target.id == "options-menu-close-path" ||
-            event.target.id == "menu-outer"
+            event.target.id == "options-menu-close-path"
         )
         {
-            document.body.style.overflowY = "visible";
+            document.body.style.overflowY = "unset";
             props.handler({menuOptionsOpen:false});
+            
         }
         else if(event.target.id == "menu-options-header-left" || event.target.id == "about-icon" || event.target.id == "about-path")
         {
-            setState({aboutOpen:true});
+            setState(previousState => { return { ...previousState, aboutOpen:true}});
+        }
+        else if(event.target.id == "button-edit")
+        {
+            setState(previousState => { return { ...previousState, editUserOpen:true}});
         }
         else if(event.target.id == "button-logout")
         {
-            localStorage.removeItem("userid");
-            props.handler({loggedIn: false});
-            navigate('/home');
+            logOut();
         }
     }
 
@@ -135,7 +171,7 @@ export default function MenuOptions(props)
 
     return (
         <>
-            <div id="menu-outer" onClick={handleClick}>
+            <div id="menu-outer" onClick={handleClick2}>
                 <div id="menu-options-wrapper">
                     <div id="menu-options-header">
                         <div id="menu-options-header-left" onClick={handleClick}>
@@ -176,9 +212,16 @@ export default function MenuOptions(props)
                     </div>
 
                     <div id="option-card-install" className="option-card" style={{display: dsp}}>
-                        <div id="option-card-right">Download to your device and use like an app</div>
+                        <div id="option-card-right">Install MinList on your device</div>
                         <div id="option-button-right">
                             <button id="installButton" type="button" onClick={presentAddToHome}>Install</button>
+                        </div>
+                    </div>
+
+                    <div id="option-card" className="option-card">
+                        <div id="option-card-right">Edit your account</div>
+                        <div id="option-button-right">
+                            <button id="button-edit" type="button" onClick={handleClick} style={{}}>Edit</button>
                         </div>
                     </div>
 
@@ -192,6 +235,7 @@ export default function MenuOptions(props)
                 </div>
             </div>
             <About open={state.aboutOpen} handler={handleState} />
+            <EditUser open={state.editUserOpen} handler={handleState} />
         </>
     );
 }

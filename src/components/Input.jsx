@@ -23,7 +23,7 @@ export default function Input(props)
     {
         const inputWrapper = document.getElementById("input-wrapper");
 
-        //console.log(window.scrollY);
+        if(inputWrapper == null) return;
 
         if(window.scrollY >= 60)
         {

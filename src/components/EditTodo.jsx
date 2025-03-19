@@ -59,14 +59,26 @@ export default function EditTodo(props)
         }
     }
 
+    function handleClick2(event)
+    {
+        if
+        (
+            event.target.id == "task-modal-wrapper"
+        )
+        {
+            setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
+            props.handler({editTodoId: ""});
+            return;
+        }
+    }
+
     function handleClick(event)
     {
         if
         (
             event.target.id == "modal-close" || 
             event.target.id == "modal-close-icon" || 
-            event.target.id == "modal-close-path" ||
-            event.target.id == "task-modal-wrapper"
+            event.target.id == "modal-close-path"
         )
         {
             setState(previousState => { return { ...previousState, title: "", list: "", details: "" }});
@@ -152,7 +164,7 @@ export default function EditTodo(props)
 
     return (
         <>
-            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick}>
+            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick2}>
                 <div className="modal-window">
                     <div className="modal-header">
                         <div className="modal-nav"></div>

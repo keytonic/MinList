@@ -3,6 +3,8 @@ import { Link , useNavigate} from "react-router-dom";
 import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import {db} from "../Firebase"
 import bcrypt from 'bcryptjs'
+import GLogin from './GLogin'
+import FLogin from './FLogin'
 import '../index.css'; 
 
 export default function Register(props) 
@@ -37,6 +39,14 @@ export default function Register(props)
         {
             document.getElementById("login-bar-alert").style.display = "none";
             localStorage.setItem("accept-cookies", "true");
+        }
+    }
+
+    function handleState(args)
+    {
+        if (args.hasOwnProperty("loggedIn")) 
+        {
+            props.handler({loggedIn: args.loggedIn});
         }
     }
 
@@ -134,7 +144,7 @@ export default function Register(props)
             return;
         }
 
-        await addDoc(collection(db, "users"), { username: username, email: email, password: hashedPassword, lists: [] }).then(() => 
+        await addDoc(collection(db, "users"), { username: username, email: email, password: hashedPassword, lists: [], last: new Date()}).then(() => 
         {
             navigate('/login');
         });
@@ -203,6 +213,8 @@ export default function Register(props)
                         </header>
                     </div>
                 </div>
+                <GLogin handler={handleState} />
+                <FLogin handler={handleState} />
             </div>
         </>
     );

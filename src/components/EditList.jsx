@@ -15,14 +15,23 @@ export default function EditList(props)
         setState({title: props.listid, oldtitle: props.listid });
     },[props.listid]);
     
+    function handleClick2(event)
+    {
+        if(event.target.id == "task-modal-wrapper")
+        {
+            setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
+            props.handler({editListId: ""});
+            return;
+        }
+    }
+
     function handleClick(event)
     {
         if
         (
             event.target.id == "modal-close" || 
             event.target.id == "modal-close-icon" || 
-            event.target.id == "modal-close-path" ||
-            event.target.id == "task-modal-wrapper"
+            event.target.id == "modal-close-path" 
         )
         {
             setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
@@ -61,7 +70,7 @@ export default function EditList(props)
                     });
 
                     //updating the users lists with this one removed
-                    await updateDoc(doc(db, "users", props.userid), { lists: newLists }).then(() => 
+                    await updateDoc(doc(db, "users", props.userid), { lists: newLists, last: new Date() }).then(() => 
                     {
                         setState(previousState => { return { ...previousState, title: "", oldTitle: "" }});
                         props.handler({editListId: "", lists: newLists});
@@ -104,7 +113,7 @@ export default function EditList(props)
             {
                 const fetchData = async () => 
                 {
-                    await updateDoc(doc(db, "users", props.userid), { lists: newLists }).then(() => 
+                    await updateDoc(doc(db, "users", props.userid), { lists: newLists, last: new Date() }).then(() => 
                     {
                         if(state.oldtitle == props.currentlist)
                         {
@@ -137,7 +146,7 @@ export default function EditList(props)
 
     return (
         <>
-            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick}>
+            <div className="modal-wrapper" id="task-modal-wrapper" onClick={handleClick2}>
                 <div className="modal-window">
                     <div className="modal-header">
                         <div className="modal-nav"></div>

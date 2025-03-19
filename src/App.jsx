@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, MemoryRouter } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google"
 
 import Body from './components/Body'; 
 import Home from './components/Home';
@@ -38,15 +39,17 @@ export default function App() {
 
     return (
         <>
-            <MemoryRouter >
-                <Routes>
-                    <Route path="/"         element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Home install={state.install} handler={handleState} /> } />
-                    <Route path="/home"     element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Home install={state.install} handler={handleState} /> } />
-                    <Route path="/login"    element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Login install={state.install} handler={handleState} /> } />
-                    <Route path="/register" element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Register install={state.install} handler={handleState} /> } />
-                    <Route path="*"         element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Home install={state.install} handler={handleState} /> } />
-                </Routes>
-            </MemoryRouter>
+            <GoogleOAuthProvider clientId='451478749980-nfeebupc7upmaoqk994vmkun64otk1vh.apps.googleusercontent.com'>
+                <MemoryRouter >
+                    <Routes>
+                        <Route path="/"         element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Home install={state.install} handler={handleState} /> } />
+                        <Route path="/home"     element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Home install={state.install} handler={handleState} /> } />
+                        <Route path="/login"    element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Login install={state.install} handler={handleState} /> } />
+                        <Route path="/register" element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Register install={state.install} handler={handleState} /> } />
+                        <Route path="*"         element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Home install={state.install} handler={handleState} /> } />
+                    </Routes>
+                </MemoryRouter>
+            </GoogleOAuthProvider>
         </>
     )
 }

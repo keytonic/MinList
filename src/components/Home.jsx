@@ -96,17 +96,18 @@ export default function Home(props)
                     <div id="intro">
                         <div id="intro-left">
                             <div id="tag-line">Keep Your Goals in Sight.</div>
-                            <div id="some-text">MinList is the simplest way to keep your tasks organized and always in sight, so nothing falls through the cracks. With its clean, distraction-free interface, MinList helps you focus on what matters most and effortlessly stay on top of your to-dos. Whether you're managing daily tasks or long-term goals, MinList ensures you never lose sight of what needs to be done.</div>
+                            <div id="some-text">MinList offers the easiest way to keep your tasks organized and within reach, ensuring nothing slips through the cracks. Its clean, distraction-free interface helps you stay focused on what matters most, effortlessly keeping you on top of your to-dos. Whether you're managing daily tasks or working toward long-term goals, MinList ensures you never lose track of what needs to be done.</div>
                             <div id="intro-button"><button id="get-started" onClick={login_register}>Create a free account</button></div>
                         </div>
                         <div id="intro-right">
                             <img id="phones" src={Phones} />
                         </div>
                     </div>
-                </div>
-                <div id="more-intro">
+                    <div id="more-intro">
                     MinList for work, home and play.<br />Accomplish more during your day.
+                    </div>
                 </div>
+
 
 
             </div>
