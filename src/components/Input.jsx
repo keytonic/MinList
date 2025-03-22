@@ -27,7 +27,6 @@ export default function Input(props)
 
         if(window.scrollY >= 60)
         {
-            
             inputWrapper.style.position = "sticky";
             inputWrapper.style.top = "0px";
             inputWrapper.style.zIndex = "1";

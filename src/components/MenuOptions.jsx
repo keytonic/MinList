@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate} from "react-router-dom";
-import { googleLogout } from '@react-oauth/google';
+import { getDoc, doc,deleteDoc,updateDoc,query,collection,where,getDocs} from "firebase/firestore";
+import { signOut , deleteUser, updateProfile, updatePassword, updateEmail, reauthenticateWithPopup, EmailAuthProvider, GoogleAuthProvider, FacebookAuthProvider} from "firebase/auth";
+import {db,auth} from "../Firebase"
+
 import OptionCard from './OptionCard';
 import About from './About';
 import EditUser from './EditUser';
@@ -40,14 +43,20 @@ export default function MenuOptions(props)
 
     function logOut()
     {
+        signOut(auth).then(() => 
+        {
+
+        }).catch((error) => 
+        {
+            console.log(error.code,",",error.message);
+        });
+
         document.body.style.overflowY = "unset";
-        googleLogout();
         localStorage.clear();
         props.handler({loggedIn: false});
         navigate('/home');
         return;
     }
-
 
     function presentAddToHome() 
     {
@@ -152,6 +161,61 @@ export default function MenuOptions(props)
         {
             logOut();
         }
+        else if(event.target.id == "button-delete")
+        {
+            let type = localStorage.getItem("type");
+            
+            if(type == "google" || type == "facebook")
+            {
+                let text = "Do you really want to delete your account?";
+                
+                if (confirm(text) == true) 
+                {
+                    let provider = null;
+
+                    if(type == "google")
+                    {
+                        provider = new GoogleAuthProvider();
+                    }
+                    else if(type == "facebook")
+                    {
+                        provider = new FacebookAuthProvider();
+                    }
+                    
+                    reauthenticateWithPopup(auth.currentUser, provider).then(async () => 
+                    {
+                        let userid = localStorage.getItem("userid");
+
+                        //before we delete the user we need to delete all thier tasks 
+                        await getDocs(query(collection(db, "tasks"), where("userid", "==", userid))).then((snap) => 
+                        {
+                            //making sure they has some tasks
+                            if(snap.empty === false)
+                            {
+                                //looping through all of the tasks 
+                                snap.forEach(async (task) => 
+                                {
+                                    //and deleting them one by one
+                                    await deleteDoc(doc(db, "tasks", task.id));
+                                });
+                            }
+                        });
+
+                        await deleteDoc(doc(db, "users", userid)).then(() => 
+                        {
+                            deleteUser(auth.currentUser);
+                            logOut();
+                            return;
+                        });
+
+                    }).catch((error) =>
+                    {
+                        console.log(error.code.split("/")[1]);
+                    });
+                } 
+                return;
+            }
+        }
     }
 
     function handleChange(event)
@@ -218,12 +282,23 @@ export default function MenuOptions(props)
                         </div>
                     </div>
 
+                    { localStorage.getItem("type") !== null && 
+                    <div id="option-card" className="option-card">
+                        <div id="option-card-right">Delete your account</div>
+                        <div id="option-button-right">
+                            <button id="button-delete" type="button" onClick={handleClick} style={{}}>Delete</button>
+                        </div>
+                    </div>
+                    }
+
+                    { localStorage.getItem("type") === null && 
                     <div id="option-card" className="option-card">
                         <div id="option-card-right">Edit your account</div>
                         <div id="option-button-right">
                             <button id="button-edit" type="button" onClick={handleClick} style={{}}>Edit</button>
                         </div>
                     </div>
+                    }
 
                     <div id="option-card" className="option-card">
                         <div id="option-card-right">End the current session and exit</div>

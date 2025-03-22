@@ -91,8 +91,6 @@ export default function Home(props)
                 </div>
             </div>
             <div id="front-wrapper">
-
-
                 <div id="intro-wrapper">
                     <div id="intro">
                         <div id="intro-left">
@@ -124,14 +122,7 @@ export default function Home(props)
                         Copyright © {String(new Date().getYear() + 1900)} MinList.net, All Rights Reserved.
                         </div>
                     </div>
-
-                    
-
-
                 </div>
-
-
-
             </div>
         </>
     );

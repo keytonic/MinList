@@ -37,7 +37,6 @@ export default function MenuLists(props)
 
     }, [state.addListOpen,state.editListId]);
 
-
     useEffect(() => 
     {
         if(state.lists.length === 0 || props.lists.length != state.lists.length)
@@ -93,7 +92,11 @@ export default function MenuLists(props)
 
     function handlePosition()
     {
-        const rec = document.getElementById("header-wrapper").getBoundingClientRect();
+        const headerWrapper = document.getElementById("header-wrapper");
+
+        if(headerWrapper == null) return;
+
+        const rec = headerWrapper.getBoundingClientRect();
 
         if(rec == null) return;
 

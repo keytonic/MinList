@@ -1,12 +1,8 @@
-
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate} from "react-router-dom";
-import { googleLogout } from '@react-oauth/google';
-import { getDoc, doc,deleteDoc,updateDoc} from "firebase/firestore";
-import {db} from "../Firebase"
-import bcrypt from 'bcryptjs'
+import { getDoc, doc,deleteDoc,updateDoc,query,collection,where,getDocs} from "firebase/firestore";
+import { signOut , deleteUser, updateProfile, updatePassword, updateEmail, reauthenticateWithCredential, EmailAuthProvider} from "firebase/auth";
+import {db,auth} from "../Firebase"
 import '../index.css'; 
 
 export default function EditUser(props) 
@@ -14,7 +10,9 @@ export default function EditUser(props)
     const [state, setState] = useState({
         userid: localStorage.getItem("userid"),
         username: "",
+        oldUsername: "",
         email: "",
+        oldEmail: "",
         new: "",
         confirm: "",
         showReset: false
@@ -22,17 +20,22 @@ export default function EditUser(props)
 
     const navigate = useNavigate();
 
-
     function logOut()
     {
+        signOut(auth).then(() => 
+        {
+            // Sign-out successful.
+        }).catch((error) => 
+        {
+            console.log(error.code,",",error.message);
+        });
+
         document.body.style.overflowY = "unset";
-        googleLogout();
         localStorage.clear();
         props.handler({loggedIn: false});
         navigate('/home');
         return;
     }
-
 
     useEffect(() => {
 
@@ -48,7 +51,7 @@ export default function EditUser(props)
                     {
                         if (snap.exists()) 
                         {
-                            setState(previousState => { return { ...previousState, username: snap.data().username, email: snap.data().email }});
+                            setState(previousState => { return { ...previousState, username: snap.data().username, oldUsername: snap.data().username, email: snap.data().email, oldEmail: snap.data().email }});
                         }
                     });
                 };
@@ -105,7 +108,7 @@ export default function EditUser(props)
         }
     }
 
-    function handleClick(event)
+    async function handleClick(event)
     {
         if
         (
@@ -120,72 +123,100 @@ export default function EditUser(props)
         }
         else if(event.target.id == "modal-save-button")
         {
-            try
+            if
+            (
+                state.email === state.oldEmail &&
+                state.username === state.oldUsername &&
+                state.new === "" &&
+                state.confirm === ""
+            )
             {
-                if(state.email.length < 5 )
-                {
-                    document.getElementById("reset-output").innerText = "Enter a valid email.";
-                    return;
-                }
-                else if(state.username.length < 2 )
-                {
-                    document.getElementById("reset-output").innerText = "Username too short.";
-                    return;
-                }
-                else if(state.new != "" && state.new.length < 2 || state.confirm != "" && state.confirm.length < 2)
-                {
-                    document.getElementById("reset-output").innerText = "New password is too short.";
-                    return;
-                }
-                else if((state.new != "" && state.confirm != "" && state.confirm !== state.new) || state.confirm !== state.new)
-                {
-                    document.getElementById("reset-output").innerText = "Passwords do not match.";
-                    return;
-                }
-                else if(state.new != "" && state.confirm != "" && state.confirm === state.new)
-                {
-                    const salt = bcrypt.genSaltSync(10);
+                props.handler({editUserOpen:false});
+                return;
+            }
 
-                    const fetchData = async () => 
+            const user = auth.currentUser;
+            const currentPassword = prompt("Enter password to continue.");
+            const credential = EmailAuthProvider.credential(user.email, currentPassword);
+
+            await reauthenticateWithCredential(user, credential).then(async () => 
+            {
+                if(state.oldUsername !== state.username)
+                {
+                    if(state.username.length > 1)
                     {
-                        await updateDoc(doc(db, "users", state.userid), 
-                        { 
-                            password: bcrypt.hashSync(state.new, salt),
-                            username: state.username,
-                            email: state.email,
-                            last: new Date()
-                        }).then(() => 
+                        await updateProfile(user, {displayName: state.username}).catch((error) =>
                         {
-                            setState(previousState => { return { ...previousState, new: "", confirm: "", showReset: false }});
-                            logOut();
-                            return;
+                            document.getElementById("reset-output").innerText += (" " + error.code.split("/")[1]);
                         });
-                    };
-                    fetchData();
+                    }
+                    else
+                    {
+                        document.getElementById("reset-output").innerText += " Username is too short.";
+                    }
+                }
+                if(state.oldEmail !== state.email)
+                {
+                    if(state.email.length > 1)
+                    {
+                        await updateEmail(user, state.email).catch((error) =>
+                        {
+                            document.getElementById("reset-output").innerText += (" " + error.code.split("/")[1]);
+                        });
+                    }
+                    else
+                    {
+                        document.getElementById("reset-output").innerText += " Invalid email.";
+                    }
+                }
+                if(state.oldEmail !== state.email  || state.oldUsername !== state.username)
+                {
+                    if(document.getElementById("reset-output").innerText == "")
+                    {
+                        await updateDoc(doc(db, "users", state.userid), { username: state.username,email: state.email }).catch((error) =>
+                        {
+                            document.getElementById("reset-output").innerText += (" " + error.code.split("/")[1]);
+                        });
+                    }
+                }
+                if(state.new !== state.confirm) 
+                {
+                    document.getElementById("reset-output").innerText += " The passwords do not match.";
+                }
+                else if(state.new !== "" && state.confirm !=="") 
+                {
+                    await updatePassword(user, state.new).then(() =>
+                    {
+                        setState(previousState => { return { ...previousState, new: "", confirm: "", showReset: false }});
+
+                    }).catch((error) =>
+                    {
+                        document.getElementById("reset-output").innerText += (" " + error.code.split("/")[1]);
+                    });
+                }
+            })
+            .catch((error) =>
+            {
+                if(error.code)
+                {
+                    if(error.code.includes("/") != false)
+                    {
+                        document.getElementById("reset-output").innerText += (" " + error.code.split("/")[1]);
+                    }
+                    else
+                    {
+                        document.getElementById("reset-output").innerText += (" " + error.code);
+                    }
                 }
                 else
                 {
-                    const fetchData = async () => 
-                    {
-                        await updateDoc(doc(db, "users", state.userid), 
-                        { 
-                            username: state.username,
-                            email: state.email,
-                            last: new Date()
-                        }).then(() => 
-                        {
-                            setState(previousState => { return { ...previousState, new: "", confirm: "", showReset: false }});
-                        });
-                    };
-                    fetchData();
+                    document.getElementById("reset-output").innerText += (" " + error);
                 }
-            } 
-            catch (err) 
+            });
+            if(document.getElementById("reset-output").innerText == "") 
             {
-                console.log(err);
+                props.handler({editUserOpen:false});
             }
-
-            props.handler({editUserOpen:false});
             return;
         }
         else if(event.target.id == "modal-delete-button")
@@ -198,8 +229,26 @@ export default function EditUser(props)
                 {
                     const fetchData = async () => 
                     {
+                        //before we delete the user we need to delete all thier tasks 
+                        const q = query(collection(db, "tasks"), where("userid", "==", state.userid));
+
+                        await getDocs(q).then((snap) => 
+                        {
+                            //making sure they has some tasks
+                            if(snap.empty === false)
+                            {
+                                //looping through all of the tasks 
+                                snap.forEach(async (task) => 
+                                {
+                                    //and deleting them one by one
+                                    await deleteDoc(doc(db, "tasks", task.id));
+                                });
+                            }
+                        });
+
                         await deleteDoc(doc(db, "users", state.userid)).then(() => 
                         {
+                            deleteUser(auth.currentUser);
                             logOut();
                             return;
                         });
@@ -223,8 +272,6 @@ export default function EditUser(props)
         {
             let eyeNew = document.getElementById("user-modal-new-text");
            
-            
-
             if(eyeNew.type == "password")
             {
                 eyeNew.type = "text";
@@ -235,8 +282,6 @@ export default function EditUser(props)
                 eyeNew.type = "password";
                 return;
             }
-            
-           return;
         }
         else if(event.target.id == "eye-confirm-outer" || event.target.id == "reset-eye-confirm" || event.target.id == "new-path2")
         {
@@ -245,7 +290,6 @@ export default function EditUser(props)
             if(eyeConfirm.type == "password")
             {
                 eyeConfirm.type = "text";
-                
                 return;
             }
             else
@@ -253,16 +297,11 @@ export default function EditUser(props)
                 eyeConfirm.type = "password";
                 return;
             }
-
-            return;
         }
         return;
     }
 
-
-
     if(props.open == false) return (<></>);
-
 
     return (
         <>
@@ -279,7 +318,6 @@ export default function EditUser(props)
                     </div>
                     <div className="modal-body">
 
-
                         <div className="option-row task-row">
                             <span  id="user-modal-username" className="modal-title-cell">Name:</span>
                             <input id="user-modal-username-text" type="text" value={state.username} onChange={handleChange}/>
@@ -292,7 +330,7 @@ export default function EditUser(props)
 
                         <div className="option-row task-row reset-row">
                             <div id="pass-reset-left">
-                                <span id="user-modal-reset" className="modal-title-cell">Reset password:</span>
+                                <span id="user-modal-reset" className="modal-title-cell">Change password:</span>
                             </div>
                             <div id="pass-reset-right" onClick={handleClick}>
                                 <svg id="icon-reset" xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="grey" viewBox="0 0 16 16">
@@ -313,6 +351,7 @@ export default function EditUser(props)
                             state.showReset === true && 
 
                             <form id="reset-form">
+
                                 <div className="option-row task-row">
                                     <span  id="user-modal-new" className="modal-title-cell">New:</span>
                                     <div id="eye-wrapper">

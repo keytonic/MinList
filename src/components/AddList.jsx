@@ -22,7 +22,6 @@ export default function AddList(props)
         }
     }
 
-
     function handleClick(event)
     {
         if

@@ -17,7 +17,8 @@ export default function Body(props)
         userid: localStorage.getItem("userid"),
         tasks: null,
         reRender: false,
-        lists: []
+        lists: [],
+        type: ""
     });
 
     useEffect(() => 
@@ -85,8 +86,6 @@ export default function Body(props)
             document.documentElement.style.backgroundImage = `url(/images/backgrounds/${state.background}.png),linear-gradient(0deg, #88a5bf, #f4f0f0)`;
         }
     }, [state.background]);
-
-
 
     function handleState(args)
     {

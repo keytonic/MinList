@@ -12,10 +12,12 @@ A "to-do" style Progressive Web App made with following technologies:
 
 
  - update firebase security
- - create privacy policy and ters of service
+ - create privacy policy, terms of service and cookie policies
  - when a user is deleted, delete all of thier tasks aswell
  - add about info, maybe buy coffie button
  - forgot password retrieval
+ - add service worker
+ - put logged in username somewhere like options menu
  ✓ add when deletinng list it also deletes associated tasks
  ✓ give ability to delete your own account
  ✓ ability to change or add password, exspecially since first time users that logged in with google wont have a password set
@@ -25,9 +27,5 @@ A "to-do" style Progressive Web App made with following technologies:
  ✓ make sure logging out fron all buttons, delete account, change password, etc deletes all local storage
  ✓ if showall is off dont add those tasks to counts
  ✓ add animations back
-
-
-
- 
 
 -->

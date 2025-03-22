@@ -39,7 +39,7 @@ export default function App() {
 
     return (
         <>
-            <GoogleOAuthProvider clientId='451478749980-nfeebupc7upmaoqk994vmkun64otk1vh.apps.googleusercontent.com'>
+            <GoogleOAuthProvider clientId='360679642563-6hqegrft4avr60vsqrse3pb4v6qpemdd.apps.googleusercontent.com'>
                 <MemoryRouter >
                     <Routes>
                         <Route path="/"         element={ state.loggedIn == true ? <Body install={state.install} handler={handleState} /> : <Home install={state.install} handler={handleState} /> } />

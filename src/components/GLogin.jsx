@@ -1,102 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import { Link , useNavigate} from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { collection, addDoc, getDocs, query, where, updateDoc, doc } from "firebase/firestore";
-import {db} from "../Firebase"
-import { useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
+import { GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import {db,auth} from "../Firebase"
 
 export default function GLogin(props) 
 {
-    const [ user, setUser ] = useState(null);
-
-    const useGLogin = useGoogleLogin(
-    {
-        onSuccess: (codeResponse) => setUser(codeResponse),
-        promptMomentNotification:true
-        //onError: (error) => console.log('Login Failed:', error)
-    });
-
+    const provider = new GoogleAuthProvider();
     const navigate = useNavigate();
 
-    useEffect(
-        () => {
-            if (user != null) 
-            {
-                axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-                    headers: {
-                        Authorization: `Bearer ${user.access_token}`,
-                        Accept: 'application/json'
-                    }
-                })
-                .then((res) => {
-                    logIn(res.data);
-                    
-                })
-                .catch((err) => {/*console.log(err)*/});
-            }
-        },
-        [ user ]
-    );
-
-    function logIn(data)
+    function useGLogin(event)
     {
-        try
+        signInWithPopup(auth, provider).then((result) => 
         {
-            const fetchData = async () => 
+            let email = result.user.email;
+            let username = result.user.displayName;
+            let uid = result.user.uid;
+
+            try
             {
-                await getDocs(query(collection(db, "users"), where("email", "==", data.email))).then((snap) => 
+                const fetchData = async () => 
                 {
-                    if(snap.empty === true)
+                    await getDocs(query(collection(db, "users"), where("uid", "==", uid))).then((snap) => 
                     {
-                        const addUser = async () => 
+                        if(snap.empty === true)
                         {
-                            await addDoc(collection(db, "users"), { username: data.name, email: data.email, password: null, lists: [], last: new Date() }).then((docRef) => 
+                            const addUser = async () => 
                             {
-                                //console.log("new user added, logging in.");
-                                localStorage.setItem("userid", docRef.id);
+                                await addDoc(collection(db, "users"), { username: username, uid: uid, email: email, lists: [], last: new Date() }).then((docRef) => 
+                                {
+                                    localStorage.setItem("type","google");
+                                    localStorage.setItem("userid", docRef.id);
+                                    props.handler({loggedIn: true});
+                                    navigate('/home');
+                                });
+                            };
+                            addUser();
+                        }
+                        else
+                        {
+                            var id = null;
+                            let lists = [];
+                            snap.forEach((doc) => {
+                                id = doc.id;
+                                lists = doc.data().lists;
+                            });
+    
+                            if(id != null)
+                            {
+                                if(lists != [] && lists[0] != undefined)
+                                {
+                                    localStorage.setItem("list",lists[0]);
+                                }
+    
+                                localStorage.setItem("type","google");
+                                localStorage.setItem("userid", id);
+                                updateDoc(doc(db, "users", id), { last: new Date() });
                                 props.handler({loggedIn: true});
                                 navigate('/home');
-                            });
-                        };
-                        addUser();
-
-                    }
-                    else
-                    {
-                        var id = null;
-                        let lists = [];
-                        snap.forEach((doc) => {
-                            id = doc.id;
-                            lists = doc.data().lists;
-                        });
-
-                        if(id != null)
-                        {
-                            //console.log("existing user found, loggin in.");
-
-                            if(lists != [] && lists[0] != undefined)
-                            {
-                                localStorage.setItem("list",lists[0]);
                             }
-
-                            localStorage.setItem("userid", id);
-                            updateDoc(doc(db, "users", id), { last: new Date() });
-                            props.handler({loggedIn: true});
-                            navigate('/home');
                         }
-                    }
-                });
+                    });
+                }
+                fetchData();
             }
-            fetchData();
-        }
-        catch (err) 
+            catch (err) 
+            {
+                console.log(err);
+            } 
+        }).catch((error) => 
         {
-            console.log(err);
-        } 
+            console.log(error.code,",",error.message);
+        });
     }
 
+    if(localStorage.getItem("userid") != null) return (<></>);
+
     return (
-        <button className="gsi-material-button" onClick={useGLogin}>
+        <button className="gsi-material-button" onClick={useGLogin} style={{marginTop: "30px"}}>
             <div className="gsi-material-button-state"></div>
             <div className="gsi-material-button-content-wrapper">
                 <div className="gsi-material-button-icon">
@@ -109,9 +89,7 @@ export default function GLogin(props)
                     </svg>
                 </div>
                 <span className="gsi-material-button-contents">Continue with Google</span>
-                <span style={{display: "none"}}>Continue with Google</span>
             </div>
         </button>
     );
 }
- 
