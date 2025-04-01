@@ -580,6 +580,7 @@ label {
     background-color: #f1f1f1;
 }
 #get-started,
+#joof-button,
 button {
     height: 40px;
     background-color: #4D708E;
@@ -1572,4 +1573,21 @@ hr
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
   transition: background-color 0s 600000s, color 0s 600000s !important;
+}
+
+#joof
+{
+    position: fixed;
+    background-color: #ffbbbb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    background-image: url(""),linear-gradient(180deg, #88a5bf, #f4f0f0);
+    background-color: #88a5bf;
+    background-attachment: fixed;
+    background-repeat: repeat;
 }

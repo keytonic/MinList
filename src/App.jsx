@@ -9,6 +9,14 @@ import Register from './components/Register';
 
 import './index.css'
 
+
+function isFacebookMessenger() 
+{
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    return (userAgent.indexOf("FBAN") > -1) || (userAgent.indexOf("FBAV") > -1);
+}
+
+
 export default function App() {
     const [state, setState] = useState({
         loggedIn: localStorage.getItem("userid") == null ? false : true,
@@ -35,6 +43,15 @@ export default function App() {
         {
             setState(previousState => { return { ...previousState, loggedIn: props.loggedIn }});
         }
+    }
+
+    if(isFacebookMessenger())
+    {
+        return(
+            <div id="joof">
+                <button id="joof-button" onClick={ () => { window.location.href = 'intent://minlist.net#Intent;scheme=https;package=com.android.chrome;end'; return null; } } >Continue to MinList.net</button>
+            </div>
+        );
     }
 
     return (
