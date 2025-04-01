@@ -1,3 +1,5 @@
+![MinList](https://raw.githubusercontent.com/keytonic/MinList/refs/heads/main/public/images/minlist.png)
+
 ## MinList
 
 A "to-do" style Progressive Web App made with following technologies:
