@@ -7,7 +7,7 @@
     "display_override": ["fullscreen", "minimal-ui"],
     "display": "standalone",
     "scope": "/",
-    "id": "https://minlist.net",
+    "id": "https://www.minlist.net",
     "icons": [
         {
             "src": "images/android-chrome-512x512.png",

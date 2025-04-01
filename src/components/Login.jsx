@@ -108,7 +108,7 @@ export default function Login(props)
 
         signInWithEmailAndPassword(auth, email, password).then((userCredential) => 
         {
-            //console.log(userCredential.user.uid);
+            //console.log(userCredential);
 
             let uid = userCredential.user.uid;
 

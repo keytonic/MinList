@@ -58,7 +58,7 @@ export default function AddList(props)
                     await updateDoc(doc(db, "users", props.userid), { lists: newLists, last: new Date() }).then(() => 
                     {
                         setState(previousState => { return { ...previousState, title: "" }});
-                        props.handler({addListOpen:false});
+                        props.handler({addListOpen:false, reRender: true,lists: newLists});
                         return;
                     });
                 };

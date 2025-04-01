@@ -113,9 +113,8 @@ export default function Home(props)
 
                     <div id="home-footer">
                         <div id="footer-top">
-                            <Link to="/">Privacy Policy</Link>
-                            <Link to="/">Terms of Use</Link>
-                            <Link to="/">Contact</Link>
+                            <Link to="/privacy">Privacy Policy</Link>
+                            <Link to="/tos">Terms of Use</Link>
                         </div>
                         <hr />
                         <div id="footer-bottom">

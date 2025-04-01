@@ -88,6 +88,10 @@ export default function MenuLists(props)
             props.handler({lists: args.lists});
             setState(previousState => { return { ...previousState, lists: args.lists }});
         }
+        if (args.hasOwnProperty("reRender")) 
+        {
+            props.handler({reRender: args.reRender});
+        }
     }
 
     function handlePosition()

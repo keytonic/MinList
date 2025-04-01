@@ -84,6 +84,10 @@ export default function Header(props)
         {
             props.handler({background:args.background});
         }
+        if (args.hasOwnProperty("reRender")) 
+        {
+            props.handler({reRender: args.reRender});
+        }
     }
 
     return (
