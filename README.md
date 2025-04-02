@@ -19,46 +19,24 @@ In a world full of overcomplicated task managers, MinList takes a different appr
 
 - **Quick Add** – Add tasks effortlessly with a few keystrokes.
 
-<img stlye="margin-left: 10px" src="https://raw.githubusercontent.com/keytonic/MinList/refs/heads/main/public/images/Screenshot1.png" width="400px">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/keytonic/MinList/refs/heads/main/public/images/Screenshot1.png" width="400px">
 
 
-- **Lists** - 
+- **Lists** - Create and manage multiple task lists
 
-<img src="https://raw.githubusercontent.com/keytonic/MinList/refs/heads/main/public/images/Screenshot2.png" width="400px">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/keytonic/MinList/refs/heads/main/public/images/Screenshot2.png" width="400px">
 
 - **Miscellaneous** - Hide completed tasks, choose background texture
 
-<img src="https://raw.githubusercontent.com/keytonic/MinList/refs/heads/main/public/images/Screenshot3.png" width="400px">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://raw.githubusercontent.com/keytonic/MinList/refs/heads/main/public/images/Screenshot3.png" width="400px">
 
 
 - **Installable** - Can be added to your device's home screen like a native app.
-
-
-
-
+- **Account creating** - Simple account creation or use google or facebook to login
 
 ## Get Started
 
 Ready to simplify your workflow? Visit [MinList.net](https://minlist.net) and start organizing your tasks today.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!-- 
  - create privacy policy, terms of service and cookie policies
