@@ -1591,3 +1591,31 @@ input:-webkit-autofill:focus {
     background-attachment: fixed;
     background-repeat: repeat;
 }
+
+#about-content
+{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#logo-link-about
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+
+#copyright,
+#copyright a
+{
+    text-decoration: none;
+    color: black;
+    font-size: 12px;
+}
